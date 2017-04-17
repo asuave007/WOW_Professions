@@ -1,0 +1,21 @@
+{
+  "Id": 141909,
+  "Name": "Enchant Neck - Mark of the Trained Soldier",
+  "Level": 100,
+  "Class": "Item Enhancements",
+  "SubClass": "Item Enhancements (Permanent)",
+  "VendorBuy": 0,
+  "VendorSell": 625,
+  "MarketValue": 111454335,
+  "MinBuyout": 124960000,
+  "Quantity": 16,
+  "NumAuctions": 16,
+  "HistoricalPrice": 99771473,
+  "RegionMarketAvg": 64081735,
+  "RegionMinBuyoutAvg": 64431031,
+  "RegionQuantity": 13,
+  "RegionHistoricalPrice": 68723293,
+  "RegionSaleAvg": 44612835,
+  "RegionAvgDailySold": 4.73,
+  "RegionSaleRate": 0.43
+}

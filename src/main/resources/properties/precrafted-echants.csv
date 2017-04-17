@@ -1,0 +1,44 @@
+#quantiy,id,name,chaos crystal count, leylight shard count , arkhana count
+
+#blood cost cloak enchants
+1,128548,Enchant Cloak - Binding of Strength*****,8,0,30
+2,128550,Enchant Cloak - Binding of Intellect*****,8,0,20
+0,128549,Enchant Cloak - Binding of Agility*****,8,0,20
+
+#minor cloak enchants
+0,128547,Enchant Cloak - Word of Intellect,0,15,0
+0,128545,Enchant Cloak - Word of Strength,0,15,0
+0,128546,Enchant Cloak - Word of Agility,0,15,0
+
+#neck enchants
+1,128552,Enchant Neck - Mark of the Distant Army,15,12,0
+0,128553,Enchant Neck - Mark of the Hidden Satyr,12,12,0
+0,141910,Enchant Neck - Mark of the Ancient Priestess,12,12,0
+0,141908,Enchant Neck - Mark of the Heavy Hide,12,12,0
+0,141909,Enchant Neck - Mark of the Trained Soldier,12,10,0
+1,128551,Enchant Neck - Mark of the Claw,12,10,0
+
+#minor neck enchants
+1,144307,Enchant Neck - Mark of the Deadly,0,2,10
+0,144304,Enchant Neck - Mark of the Master,0,3,10
+1,144305,Enchant Neck - Mark of the Versatile,0,1,10
+1,144306,Enchant Neck - Mark of the Quick,0,1,10
+
+#ring enchants
+0,128544,Enchant Ring - Binding of Versatility,4,0,35
+0,128543,Enchant Ring - Binding of Mastery,4,0,35
+0,128543,Enchant Ring - Binding of Haste,4,0,35
+1,128541,Enchant Ring - Binding of Critical Strike,4,0,35
+
+#minor ring enchants
+0,128538,Enchant Ring - Word of Haste,0,0,12
+0,128539,Enchant Ring - Word of Mastery,0,0,12
+1,128537,Enchant Ring - Word of Critical Strike,0,0,12
+0,128540,Enchant Ring - Word of Versatility,0,0,10
+
+#special enchants
+0,128554,Enchant Shoulder - Boon of the Scavenger,0,2,0
+0,128558,Enchant Gloves - Legion Herbalism,0,1,0
+0,128559,Enchant Gloves - Legion Mining ,0,1,0
+0,128560,Enchant Gloves - Legion Skinning,0,1,0
+0,128561,Enchant Gloves - Legion Surveying,0,1,0
