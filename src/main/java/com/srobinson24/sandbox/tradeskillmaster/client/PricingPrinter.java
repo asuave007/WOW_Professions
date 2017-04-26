@@ -14,7 +14,7 @@ public class PricingPrinter {
 
     private final PricingService pricingService;
 
-public PricingPrinter(@Qualifier ("secondTimeIsTheCharm") PricingService pricingService) {
+public PricingPrinter(PricingService pricingService) {
         this.pricingService = pricingService;
     }
 

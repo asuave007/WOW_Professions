@@ -12,28 +12,28 @@
 
 #neck enchants
 1,128552,Enchant Neck - Mark of the Distant Army,124442-15,124441-12
-0,128553,Enchant Neck - Mark of the Hidden Satyr,124442-12,124441-12
+1,128553,Enchant Neck - Mark of the Hidden Satyr,124442-12,124441-12
 0,141910,Enchant Neck - Mark of the Ancient Priestess,124442-12,124441-12
 2,141908,Enchant Neck - Mark of the Heavy Hide,124442-12,124441-12
-3,141909,Enchant Neck - Mark of the Trained Soldier,124442-12,124441-10
-0,128551,Enchant Neck - Mark of the Claw,124442-12,124441-10
+1,141909,Enchant Neck - Mark of the Trained Soldier,124442-12,124441-10
+1,128551,Enchant Neck - Mark of the Claw,124442-12,124441-10
 
 #minor neck enchants
 1,144307,Enchant Neck - Mark of the Deadly,124441-2,124440-10
 0,144304,Enchant Neck - Mark of the Master,124441-3,124440-10
-0,144305,Enchant Neck - Mark of the Versatile,124441-1,124440-10
+2,144305,Enchant Neck - Mark of the Versatile,124441-1,124440-10
 1,144306,Enchant Neck - Mark of the Quick,124441-1,124440-10
 
 #ring enchants
 1,128544,Enchant Ring - Binding of Versatility,124442-4,124440-35
-2,128543,Enchant Ring - Binding of Mastery,124442-4,124440-35
+0,128543,Enchant Ring - Binding of Mastery,124442-4,124440-35
 0,128543,Enchant Ring - Binding of Haste,124442-4,124440-35
 1,128541,Enchant Ring - Binding of Critical Strike,124442-4,124440-35
 
 #minor ring enchants
 0,128538,Enchant Ring - Word of Haste,124440-12
 0,128539,Enchant Ring - Word of Mastery,124440-12
-1,128537,Enchant Ring - Word of Critical Strike,124440-12
+0,128537,Enchant Ring - Word of Critical Strike,124440-12
 0,128540,Enchant Ring - Word of Versatility,124440-10
 
 #special enchants

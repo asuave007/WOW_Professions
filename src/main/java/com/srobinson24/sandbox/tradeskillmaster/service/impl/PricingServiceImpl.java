@@ -9,7 +9,6 @@ import com.srobinson24.sandbox.tradeskillmaster.service.PricingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +21,7 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Service ("secondTimeIsTheCharm")
+@Service
 public class PricingServiceImpl implements PricingService {
 
     private Logger logger = LoggerFactory.getLogger(PricingServiceImpl.class);
@@ -37,7 +36,8 @@ public class PricingServiceImpl implements PricingService {
     private final ProfitProcessor profitProcessor;
 
     @Autowired
-    public PricingServiceImpl(@Qualifier("itemServiceImpl")final ItemService itemService, @Qualifier ("profitProcessorImpl") final ProfitProcessor ProfitProcessor) {
+    public PricingServiceImpl(final ItemService itemService,
+                              final ProfitProcessor ProfitProcessor) {
         this.itemService = itemService;
         this.profitProcessor = ProfitProcessor;
     }
@@ -50,9 +50,9 @@ public class PricingServiceImpl implements PricingService {
 
         final Set<TradeSkillMasterItem> allItems = Stream.concat(enchants.stream(), craftingItemsMap.values().stream()).collect(Collectors.toSet());
         logger.debug("Items to update: {}", allItems);
-        final Map<Integer, TradeSkillMasterItem> itemMap = itemService.updateItemInformation2(allItems);
+        final Map<Integer, TradeSkillMasterItem> itemMap = itemService.updateItemInformation(allItems);
 
-        final Set<Enchant> profitableEnchants = sortByProfit2(enchants);
+        final Set<Enchant> profitableEnchants = sortByProfit(enchants);
         displayOutput(profitableEnchants, craftingItemsMap, enchants);
 
     }
@@ -62,12 +62,6 @@ public class PricingServiceImpl implements PricingService {
         logger.info("**FINAL SOLUTIONS**");
         if (printAll) logger.info("Printing Everything");
         else logger.info("Printing everything about profit threshold {} gold", profitThreshold);
-        int crystals = 0;
-        int crystalsAvailable = 0;
-        int shards = 0;
-        int shardsAvailable = 0;
-        int arkhana = 0;
-        int arkhanaAvailable = 0;
         int totalCraftingCost = 0;
         int totalProfit = 0;
 
@@ -75,7 +69,7 @@ public class PricingServiceImpl implements PricingService {
         //todo: delete this loop
         for (Enchant e : profitableEnchants) {
             final int craftingCost = profitProcessor.getCraftingCost(e);
-            final Integer profit = profitProcessor.calculateProfit2(e);
+            final Integer profit = profitProcessor.calculateProfit(e);
             totalProfit += profit;
             logger.info("Profit: [{}] Sales Price: [{}] Crafting Cost: [{}] Name: [{}] ",
                     String.format("%6s", (formatter.format(profit))),
@@ -86,12 +80,12 @@ public class PricingServiceImpl implements PricingService {
 
         Set<Enchant> onHandProfitableEnchants = profitableEnchants.parallelStream()
                 .filter(e -> e.getQuantityOnhand() > 0)
-                .filter(e -> profitProcessor.calculateProfit2(e) >= profitThreshold)
+                .filter(e -> profitProcessor.calculateProfit(e) >= profitThreshold)
                 .collect(Collectors.toSet());
 
         Set <Enchant> profitableToCraftEnchants = profitableEnchants.parallelStream()
                 .filter(e -> e.getQuantityOnhand() == 0)
-                .filter(e -> profitProcessor.calculateProfit2(e) >= profitThreshold)
+                .filter(e -> profitProcessor.calculateProfit(e) >= profitThreshold)
                 .collect(Collectors.toSet());
 
         final Set<Enchant> notProfitableEnchantsOnHand = allEnchants.parallelStream()
@@ -164,12 +158,12 @@ public class PricingServiceImpl implements PricingService {
 
 
     @Override
-    public SortedSet<Enchant> sortByProfit2(Set<Enchant> enchants) {
+    public SortedSet<Enchant> sortByProfit(Set<Enchant> enchants) {
         logger.debug("sorting enchants by profit: {}", enchants);
         final TreeSet<Enchant> sortedSet = new TreeSet<>((o1, o2) -> {
             Preconditions.checkNotNull(o1);
             Preconditions.checkNotNull(o2);
-            return profitProcessor.calculateProfit2(o2).compareTo(profitProcessor.calculateProfit2(o1));
+            return Integer.compare(profitProcessor.calculateProfit(o2), profitProcessor.calculateProfit(o1));
         });
 
         if (printAll) {
@@ -177,7 +171,7 @@ public class PricingServiceImpl implements PricingService {
         } else {
             final Set<Enchant> profitableEnchants = enchants
                     .stream()
-                    .filter(enchant -> profitProcessor.calculateProfit2(enchant) > profitThreshold)
+                    .filter(enchant -> profitProcessor.calculateProfit(enchant) > profitThreshold)
                     .collect(Collectors.toSet());
 
             sortedSet.addAll(profitableEnchants);

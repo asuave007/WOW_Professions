@@ -15,7 +15,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
         ApplicationContext context = new ClassPathXmlApplicationContext("spring/applicationContext.xml");
-        PricingService pricingService = (PricingService) context.getBean("secondTimeIsTheCharm");
+        PricingService pricingService = (PricingService) context.getBean("pricingServiceImpl");
         pricingService.getPricedEnchants();
         
     }

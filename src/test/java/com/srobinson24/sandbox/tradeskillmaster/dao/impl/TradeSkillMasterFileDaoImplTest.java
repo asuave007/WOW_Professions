@@ -3,7 +3,9 @@ package com.srobinson24.sandbox.tradeskillmaster.dao.impl;
 import com.srobinson24.sandbox.tradeskillmaster.dao.TradeSkillMasterItemDao;
 import com.srobinson24.sandbox.tradeskillmaster.domain.TradeSkillMasterItem;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.File;
@@ -11,7 +13,12 @@ import java.io.File;
 /**
  * Created by srobinso on 3/28/2017.
  */
-public class TradeSkillMasterFileTradeSkillMasterItemDaoImplTest {
+public class TradeSkillMasterFileDaoImplTest {
+
+    @Rule
+    //todo: wire this up to work correctly
+    private TemporaryFolder tempFile = new TemporaryFolder();
+
     @Test
     public void testSave1Entry() throws Exception {
         TradeSkillMasterItemDao tradeSkillMasterItemDao = new FileTradeSkillMasterItemDaoImpl();

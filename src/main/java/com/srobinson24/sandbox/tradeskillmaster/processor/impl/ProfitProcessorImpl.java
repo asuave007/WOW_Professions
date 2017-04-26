@@ -38,7 +38,7 @@ public class ProfitProcessorImpl implements ProfitProcessor {
     }
 
     @Override
-    public Integer calculateProfit2(Enchant enchant) {
+    public int calculateProfit(Enchant enchant) {
         final Integer craftingCost = getCraftingCost(enchant);
         final int minimumBuyout = enchant.getRawMinBuyout();
         final int auctionHouseCut = (int)(auctionHousePercent * minimumBuyout);

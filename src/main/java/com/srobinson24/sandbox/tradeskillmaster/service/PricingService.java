@@ -13,5 +13,5 @@ public interface PricingService {
 
     void getPricedEnchants() throws IOException;
 
-    SortedSet<Enchant> sortByProfit2(Set<Enchant> enchants);
+    SortedSet<Enchant> sortByProfit(Set<Enchant> enchants);
 }

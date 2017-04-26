@@ -13,9 +13,11 @@ public interface ItemService {
 
     Map<Integer, TradeSkillMasterItem> readCraftingItems();
 
-    Set<Enchant> readEnchants(Map <Integer, TradeSkillMasterItem> craftingMaterialSet);
+    Set<Enchant> readEnchants(Map <Integer, TradeSkillMasterItem> craftingMaterialsKeyedOnId);
 
-    Map<Integer, TradeSkillMasterItem> updateItemInformation2(Set <TradeSkillMasterItem> enchants);
+    Map<Integer, TradeSkillMasterItem> updateItemInformation(Set <TradeSkillMasterItem> enchants);
+
+    Set<Integer> findItemsToUpdate(Set<TradeSkillMasterItem> enchantsFromFile);
 
     void callUpdateService(Set<TradeSkillMasterItem> itemsToUpdate, Set<Integer> itemIdsToUpdate);
 

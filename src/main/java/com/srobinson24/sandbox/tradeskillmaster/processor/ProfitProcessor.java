@@ -8,7 +8,7 @@ import com.srobinson24.sandbox.tradeskillmaster.domain.Enchant;
 public interface ProfitProcessor {
     int  getCraftingCost(Enchant enchant);
 
-    Integer calculateProfit2(Enchant enchant);
+    int calculateProfit(Enchant enchant);
 
     int truncateSilverAndCopper(int value);
 }

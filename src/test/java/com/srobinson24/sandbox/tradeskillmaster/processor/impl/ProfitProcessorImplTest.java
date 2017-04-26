@@ -10,7 +10,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 /**
  * Created by srobinso on 4/3/2017.
  */
-public class ProfitProcessorImplTest2 {
+public class ProfitProcessorImplTest {
     @Test
     public void testGetCraftingCost() throws Exception {
         Enchant markOfTheTrainedSoldier = new Enchant();
@@ -58,7 +58,7 @@ public class ProfitProcessorImplTest2 {
         final ProfitProcessorImpl profitProcessorImpl = new ProfitProcessorImpl();
         ReflectionTestUtils.setField(profitProcessorImpl, "auctionHousePercent", 0.05);
 
-        final int actual = profitProcessorImpl.calculateProfit2(markOfTheTrainedSoldier);
+        final int actual = profitProcessorImpl.calculateProfit(markOfTheTrainedSoldier);
 
         Assert.assertEquals(37691500, actual);
 
