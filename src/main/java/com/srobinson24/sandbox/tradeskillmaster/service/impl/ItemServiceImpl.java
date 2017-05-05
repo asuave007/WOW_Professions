@@ -1,7 +1,6 @@
 package com.srobinson24.sandbox.tradeskillmaster.service.impl;
 
 import com.google.common.base.Charsets;
-import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 import com.google.common.io.LineProcessor;
 import com.srobinson24.sandbox.tradeskillmaster.dao.TradeSkillMasterItemDao;
@@ -21,8 +20,8 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by srobinso on 3/24/2017.
@@ -87,41 +86,41 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Map<Integer, TradeSkillMasterItem> updateItemInformation(final Set <TradeSkillMasterItem> allItems) {
-        logger.debug("retrieve all items of: {}", allItems);
-        final Set<Integer> itemIdsToUpdate = findItemsToUpdate(allItems);
-        callUpdateService(allItems, itemIdsToUpdate);
+        logger.debug("updating item information on items: {}", allItems);
+        updateFromCache(allItems);
+        final Set<TradeSkillMasterItem> itemsToUpdate = findItemsToUpdate(allItems);
+        callUpdateService(itemsToUpdate);
         tradeSkillMasterItemDao.saveAll(allItems);
         return tradeSkillMasterItemDao.readAll();
     }
 
-    @Override
-    public Set<Integer> findItemsToUpdate(Set<TradeSkillMasterItem> enchantsFromFile) {
-        final Set <Integer> itemsToUpdate = Sets.newHashSet();
-        for (TradeSkillMasterItem enchant : enchantsFromFile) {
-            final TradeSkillMasterItem itemFromDisk = tradeSkillMasterItemDao.read(enchant.getId());
-            if (itemFromDisk == null
-                    || itemFromDisk.getLastUpdate() == null
-                    || itemFromDisk.getLastUpdate().plusMinutes(minutesBeforeUpdate).isBefore(LocalDateTime.now())) {
-                logger.debug("Adding item to list of items to update: {}", itemFromDisk);
-                itemsToUpdate.add(enchant.getId());
-            }
-            else {
-                logger.debug("Pulling item from disk: {}", itemFromDisk);
-                enchant.setLastUpdate(itemFromDisk.getLastUpdate());
-                enchant.setRawMinBuyout(itemFromDisk.getRawMinBuyout());
-                enchant.setRawMarketValue(itemFromDisk.getRawMarketValue());
-            }
-        }
-
-        return itemsToUpdate;
+    public Set <TradeSkillMasterItem> findItemsToUpdate(Set<TradeSkillMasterItem> allItems) {
+        return allItems.stream().filter(e -> e.getLastUpdate() == null).collect(Collectors.toSet());
     }
 
     @Override
-    public void callUpdateService(final Set<TradeSkillMasterItem> itemsToUpdate, Set<Integer> itemIdsToUpdate) {
+    public void updateFromCache(Set<TradeSkillMasterItem> enchantsFromFile) {
+        for (TradeSkillMasterItem enchant : enchantsFromFile) {
+            final TradeSkillMasterItem itemFromDisk = tradeSkillMasterItemDao.read(enchant.getId());
+            if (itemFromDisk != null
+                    && itemFromDisk.getLastUpdate() != null
+                    && !itemFromDisk.getLastUpdate().plusMinutes(minutesBeforeUpdate).isBefore(LocalDateTime.now())) {
+                        logger.debug("Pulling item from disk: {}", itemFromDisk);
+
+                        BeanUtils.copyProperties(itemFromDisk,enchant);
+
+                    } else {
+                logger.debug("Adding item to list of items to update: {}", itemFromDisk);
+            }
+        }
+    }
+
+    @Override
+    public void callUpdateService(final Set<TradeSkillMasterItem> itemsToUpdate) {
 
         logger.info("updating from tsm: {}", itemsToUpdate);
 
-        itemsToUpdate.stream().filter(item -> itemIdsToUpdate.contains(item.getId())).forEach(item -> {
+        itemsToUpdate.forEach(item -> {
 
             final TradeSkillMasterItem updatedTsmItem = itemUpdateService.fetchUpdateItemInformation(item.getId());
             BeanUtils.copyProperties(updatedTsmItem, item);

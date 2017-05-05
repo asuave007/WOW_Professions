@@ -1,9 +1,9 @@
 #quantiy on hand,id,name,crafting material id-crafting material quantity (n number of times)
 
 #blood cost cloak enchants
-1,128548,Enchant Cloak - Binding of Strength*****,124442-8,124441-0,124440-30
+0,128548,Enchant Cloak - Binding of Strength*****,124442-8,124441-0,124440-30
 1,128550,Enchant Cloak - Binding of Intellect*****,124442-8,124440-20
-0,128549,Enchant Cloak - Binding of Agility*****,124442-8,124440-20
+1,128549,Enchant Cloak - Binding of Agility*****,124442-8,124440-20
 
 #minor cloak enchants
 0,128547,Enchant Cloak - Word of Intellect,124441-15
@@ -12,26 +12,26 @@
 
 #neck enchants
 1,128552,Enchant Neck - Mark of the Distant Army,124442-15,124441-12
-1,128553,Enchant Neck - Mark of the Hidden Satyr,124442-12,124441-12
+0,128553,Enchant Neck - Mark of the Hidden Satyr,124442-12,124441-12
 0,141910,Enchant Neck - Mark of the Ancient Priestess,124442-12,124441-12
 2,141908,Enchant Neck - Mark of the Heavy Hide,124442-12,124441-12
 1,141909,Enchant Neck - Mark of the Trained Soldier,124442-12,124441-10
-1,128551,Enchant Neck - Mark of the Claw,124442-12,124441-10
+0,128551,Enchant Neck - Mark of the Claw,124442-12,124441-10
 
 #minor neck enchants
-1,144307,Enchant Neck - Mark of the Deadly,124441-2,124440-10
+0,144307,Enchant Neck - Mark of the Deadly,124441-2,124440-10
 0,144304,Enchant Neck - Mark of the Master,124441-3,124440-10
-2,144305,Enchant Neck - Mark of the Versatile,124441-1,124440-10
+1,144305,Enchant Neck - Mark of the Versatile,124441-1,124440-10
 1,144306,Enchant Neck - Mark of the Quick,124441-1,124440-10
 
 #ring enchants
-1,128544,Enchant Ring - Binding of Versatility,124442-4,124440-35
+0,128544,Enchant Ring - Binding of Versatility,124442-4,124440-35
 0,128543,Enchant Ring - Binding of Mastery,124442-4,124440-35
 0,128543,Enchant Ring - Binding of Haste,124442-4,124440-35
-1,128541,Enchant Ring - Binding of Critical Strike,124442-4,124440-35
+0,128541,Enchant Ring - Binding of Critical Strike,124442-4,124440-35
 
 #minor ring enchants
-0,128538,Enchant Ring - Word of Haste,124440-12
+0,128538,Enchant Ring - Word of Haste,124440-10
 0,128539,Enchant Ring - Word of Mastery,124440-12
 0,128537,Enchant Ring - Word of Critical Strike,124440-12
 0,128540,Enchant Ring - Word of Versatility,124440-10
@@ -40,5 +40,5 @@
 0,128554,Enchant Shoulder - Boon of the Scavenger,124441-2
 0,128558,Enchant Gloves - Legion Herbalism,124441-1
 0,128559,Enchant Gloves - Legion Mining,124441-1
-0,128560,Enchant Gloves - Legion Skinning,124441-1
-0,128561,Enchant Gloves - Legion Surveying,124441-1
+1,128560,Enchant Gloves - Legion Skinning,124441-1
+1,128561,Enchant Gloves - Legion Surveying,124441-1

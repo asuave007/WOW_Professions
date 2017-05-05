@@ -17,8 +17,8 @@ public interface ItemService {
 
     Map<Integer, TradeSkillMasterItem> updateItemInformation(Set <TradeSkillMasterItem> enchants);
 
-    Set<Integer> findItemsToUpdate(Set<TradeSkillMasterItem> enchantsFromFile);
+    void updateFromCache(Set<TradeSkillMasterItem> enchantsFromFile);
 
-    void callUpdateService(Set<TradeSkillMasterItem> itemsToUpdate, Set<Integer> itemIdsToUpdate);
+    void callUpdateService(Set<TradeSkillMasterItem> itemsToUpdate);
 
 }
