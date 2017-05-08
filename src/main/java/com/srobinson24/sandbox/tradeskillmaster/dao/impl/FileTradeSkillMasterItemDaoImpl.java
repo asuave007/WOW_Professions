@@ -8,6 +8,8 @@ import com.srobinson24.sandbox.tradeskillmaster.exception.RuntimeFileProcessingE
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
@@ -28,6 +30,14 @@ public class FileTradeSkillMasterItemDaoImpl implements TradeSkillMasterItemDao 
     @Value("${save.file}")
     private String fileName;
 
+    private File saveFile;
+
+    @Autowired
+    FileTradeSkillMasterItemDaoImpl (final File saveFile) {
+        this.saveFile = saveFile;
+    }
+
+
     @Override
     public boolean saveAll (Set<TradeSkillMasterItem> tradeSkillMasterItemSet) {
         logger.debug("done updating, saving, {}", tradeSkillMasterItemSet);
@@ -40,7 +50,6 @@ public class FileTradeSkillMasterItemDaoImpl implements TradeSkillMasterItemDao 
 
     @Override
     public boolean save(TradeSkillMasterItem tsmItem) {
-        final File saveFile = new File(fileName);
         try {
             FileUtils.touch(saveFile); //creates the saveFile if it does not exist
         } catch (IOException ex) {
@@ -68,12 +77,13 @@ public class FileTradeSkillMasterItemDaoImpl implements TradeSkillMasterItemDao 
     @Override
     public Map<Integer, TradeSkillMasterItem> readAll () {
         logger.debug("Reading all items from disk");
-        final File file = new File(fileName);
-        if (!file.exists()) return Maps.newHashMap();
+//        final File file = new File(fileName);
+        if (!saveFile.exists()) return Maps.newHashMap();
 
-        try (final ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+        try (final ObjectInputStream ois = new ObjectInputStream(new FileInputStream(saveFile))) {
             return Map.class.<Integer, TradeSkillMasterItem>cast(ois.readObject());
         } catch (EOFException ex) {
+            logger.error("THIS NEEDS FIXED, WHY AM I HERE!", ex);
             return Maps.newHashMap(); //fixme: REALLY??!?! expected behaviour????
         } catch (IOException | ClassNotFoundException ex) {
             throw new RuntimeFileProcessingException(ex);

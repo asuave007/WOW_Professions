@@ -11,6 +11,10 @@
 
     <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean"/>
 
+    <bean id="saveFile" class="java.io.File">
+            <constructor-arg value="${save.file}"/>
+    </bean>
+
     <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
         <property name="ignoreUnresolvablePlaceholders" value="false" />
         <property name="ignoreResourceNotFound" value="false" />

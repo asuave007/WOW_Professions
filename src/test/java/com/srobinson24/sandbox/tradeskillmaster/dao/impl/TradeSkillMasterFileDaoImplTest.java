@@ -16,14 +16,13 @@ import java.io.File;
 public class TradeSkillMasterFileDaoImplTest {
 
     @Rule
-    //todo: wire this up to work correctly
-    private TemporaryFolder tempFile = new TemporaryFolder();
+    public TemporaryFolder tempFile = new TemporaryFolder();
 
     @Test
     public void testSave1Entry() throws Exception {
-        TradeSkillMasterItemDao tradeSkillMasterItemDao = new FileTradeSkillMasterItemDaoImpl();
-        final String testFileName = "testFile.txt";
-        ReflectionTestUtils.setField(tradeSkillMasterItemDao,"fileName", testFileName);
+
+
+        TradeSkillMasterItemDao tradeSkillMasterItemDao = new FileTradeSkillMasterItemDaoImpl(tempFile.newFile("testFile.txt"));
 
         TradeSkillMasterItem testTradeSkillMasterItem = new TradeSkillMasterItem();
         testTradeSkillMasterItem.setName("Enchant Neck - Mark of the Trained Soldier");
@@ -32,15 +31,11 @@ public class TradeSkillMasterFileDaoImplTest {
 
         tradeSkillMasterItemDao.save(testTradeSkillMasterItem); //if not thrown, then we good
 
-        File file = new File(testFileName);
-        file.deleteOnExit();
     }
 
     @Test
     public void testSave2Entries() throws Exception {
-        TradeSkillMasterItemDao tradeSkillMasterItemDao = new FileTradeSkillMasterItemDaoImpl();
-        final String testFileName = "testFile.txt";
-        ReflectionTestUtils.setField(tradeSkillMasterItemDao,"fileName", testFileName);
+        TradeSkillMasterItemDao tradeSkillMasterItemDao = new FileTradeSkillMasterItemDaoImpl(tempFile.newFile("testFile.txt"));
 
         TradeSkillMasterItem testItem1 = new TradeSkillMasterItem();
         testItem1.setName("Enchant Neck - Mark of the Trained Soldier");
@@ -55,15 +50,11 @@ public class TradeSkillMasterFileDaoImplTest {
         tradeSkillMasterItemDao.save(testItem1); //if not thrown, then we good
         tradeSkillMasterItemDao.save(testItem2); //if not thrown, then we good
 
-        File file = new File(testFileName);
-        file.deleteOnExit();
     }
 
     @Test
     public void testRead1Item() throws Exception {
-        TradeSkillMasterItemDao tradeSkillMasterItemDao = new FileTradeSkillMasterItemDaoImpl();
-        final String testFileName = "testFile.txt";
-        ReflectionTestUtils.setField(tradeSkillMasterItemDao,"fileName", testFileName);
+        TradeSkillMasterItemDao tradeSkillMasterItemDao = new FileTradeSkillMasterItemDaoImpl(tempFile.newFile("testFile.txt"));
 
         TradeSkillMasterItem testTradeSkillMasterItem = new TradeSkillMasterItem();
         testTradeSkillMasterItem.setName("Enchant Neck - Mark of the Trained Soldier");
@@ -76,16 +67,12 @@ public class TradeSkillMasterFileDaoImplTest {
 
         Assert.assertEquals(testTradeSkillMasterItem, readTradeSkillMasterItem);
 
-        File file = new File(testFileName);
-        file.deleteOnExit();
 
     }
 
     @Test
     public void testSave2Read1Item() throws Exception {
-        TradeSkillMasterItemDao tradeSkillMasterItemDao = new FileTradeSkillMasterItemDaoImpl();
-        final String testFileName = "testFile.txt";
-        ReflectionTestUtils.setField(tradeSkillMasterItemDao,"fileName", testFileName);
+        TradeSkillMasterItemDao tradeSkillMasterItemDao = new FileTradeSkillMasterItemDaoImpl(tempFile.newFile("testFile.txt"));
 
         TradeSkillMasterItem testItem1 = new TradeSkillMasterItem();
         testItem1.setName("Enchant Neck - Mark of the Trained Soldier");
@@ -103,8 +90,6 @@ public class TradeSkillMasterFileDaoImplTest {
         final TradeSkillMasterItem actualTsmItem = tradeSkillMasterItemDao.read(testItem1.getId());
         Assert.assertEquals(testItem1, actualTsmItem);
 
-        File file = new File(testFileName);
-        file.deleteOnExit();
 
     }
 
