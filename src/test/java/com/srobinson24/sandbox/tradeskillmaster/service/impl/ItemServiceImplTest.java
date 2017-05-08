@@ -75,19 +75,26 @@ public class ItemServiceImplTest {
         ReflectionTestUtils.setField(itemService,"minutesBeforeUpdate", 60); //set update refresh interval to 60 min
 
         Enchant enchant1 = new Enchant();
+        enchant1.setName("first");
         enchant1.setId(1);
-        enchant1.setLastUpdate(LocalDateTime.now());
+        enchant1.setLastUpdate(LocalDateTime.now().minusMinutes(10));
 
 
         Enchant enchant2 = new Enchant();
+        enchant2.setName("second");
         enchant2.setId(2);
         enchant2.setLastUpdate(null);
 
-        final Set<TradeSkillMasterItem> itemsToUpdate = itemService.findItemsToUpdate(Sets.newHashSet(enchant1, enchant2));
+        Enchant enchant3 = new Enchant();
+        enchant3.setName("third");
+        enchant3.setId(3);
+        enchant3.setLastUpdate(LocalDateTime.now().minusMinutes(90));
 
-        Assert.assertEquals(1, itemsToUpdate.size());
+        final Set<TradeSkillMasterItem> itemsToUpdate = itemService.findItemsToUpdate(Sets.newHashSet(enchant1, enchant2, enchant3));
 
-        Assert.assertEquals(itemsToUpdate.stream().findFirst().get(),enchant2);
+        Assert.assertEquals(2, itemsToUpdate.size());
+
+        Assert.assertEquals(itemsToUpdate,Sets.newHashSet(enchant2, enchant3));
     }
 
 }

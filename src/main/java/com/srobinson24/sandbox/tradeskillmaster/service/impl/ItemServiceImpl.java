@@ -95,7 +95,10 @@ public class ItemServiceImpl implements ItemService {
     }
 
     public Set <TradeSkillMasterItem> findItemsToUpdate(Set<TradeSkillMasterItem> allItems) {
-        return allItems.stream().filter(e -> e.getLastUpdate() == null).collect(Collectors.toSet());
+        return allItems.stream()
+                .filter(item -> Objects.isNull(item.getLastUpdate()) ||
+                    LocalDateTime.now().minusMinutes(minutesBeforeUpdate).isAfter(item.getLastUpdate()))
+                .collect(Collectors.toSet());
     }
 
     @Override
@@ -124,6 +127,7 @@ public class ItemServiceImpl implements ItemService {
 
             final TradeSkillMasterItem updatedTsmItem = itemUpdateService.fetchUpdateItemInformation(item.getId());
             BeanUtils.copyProperties(updatedTsmItem, item);
+            item.setLastUpdate(LocalDateTime.now());
         });
 
     }

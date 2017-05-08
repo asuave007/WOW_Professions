@@ -54,7 +54,7 @@ public class ItemUpdateServiceImpl implements ItemUpdateService {
             return processHttpResponseString(responseString);
         }
         else {
-            throw new RuntimeHttpException("Invalid HTTP response code: " + response);
+            throw new RuntimeHttpException("Invalid HTTP response code: [" + status + "] with message: " + EntityUtils.toString(response.getEntity()));
         }
     }
 
