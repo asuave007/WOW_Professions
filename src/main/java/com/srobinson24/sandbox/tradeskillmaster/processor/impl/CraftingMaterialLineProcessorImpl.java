@@ -1,6 +1,7 @@
 package com.srobinson24.sandbox.tradeskillmaster.processor.impl;
 
 import com.google.common.base.Preconditions;
+import com.google.common.io.LineProcessor;
 import com.srobinson24.sandbox.tradeskillmaster.domain.TradeSkillMasterItem;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -14,12 +15,13 @@ import java.util.Map;
 /**
  * Created by srobinso on 3/24/2017.
  */
+//todo: I'm not even using this!?!?
 @Component
-public class CraftingMaterialLineProcessorImpl implements com.google.common.io.LineProcessor<Map<Integer,TradeSkillMasterItem>> {
+public class CraftingMaterialLineProcessorImpl implements LineProcessor<Map<Integer,TradeSkillMasterItem>> {
 
-    private Logger logger = LoggerFactory.getLogger(CraftingMaterialLineProcessorImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(CraftingMaterialLineProcessorImpl.class);
 
-    private Map <Integer,TradeSkillMasterItem> map = new HashMap<>();
+    private final Map <Integer,TradeSkillMasterItem> map = new HashMap<>();
 
     public boolean processLine(String line) throws IOException {
         Preconditions.checkNotNull(line);

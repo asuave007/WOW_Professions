@@ -11,8 +11,8 @@ import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * Created by srobinso on 3/24/2017.
@@ -21,7 +21,6 @@ public class ItemServiceImplTest {
     @Test
     public void testUpdateFromCacheItemNotOnDisk() throws Exception {
 
-        final LocalDateTime lastUpdate = LocalDateTime.now().minusMinutes(30);
         final TradeSkillMasterItem expected = new TradeSkillMasterItem();
         expected.setId(38);
 

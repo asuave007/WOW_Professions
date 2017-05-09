@@ -10,11 +10,10 @@ import java.util.Set;
  */
 public interface TradeSkillMasterItemDao {
 
-    boolean save(TradeSkillMasterItem tradeSkillMasterItem);
-    boolean saveAll(Set<TradeSkillMasterItem> items);
+    void save(TradeSkillMasterItem tradeSkillMasterItem);
+    void saveAll(Set<TradeSkillMasterItem> items);
     TradeSkillMasterItem read (Integer id);
     Map<Integer, TradeSkillMasterItem> readAll ();
-    boolean delete (TradeSkillMasterItem tradeSkillMasterItem);
 
 
 }

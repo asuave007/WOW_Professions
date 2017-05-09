@@ -6,9 +6,6 @@ import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.springframework.test.util.ReflectionTestUtils;
-
-import java.io.File;
 
 /**
  * Created by srobinso on 3/28/2017.
@@ -16,7 +13,7 @@ import java.io.File;
 public class TradeSkillMasterFileDaoImplTest {
 
     @Rule
-    public TemporaryFolder tempFile = new TemporaryFolder();
+    public final TemporaryFolder tempFile = new TemporaryFolder();
 
     @Test
     public void testSave1Entry() throws Exception {
@@ -90,11 +87,6 @@ public class TradeSkillMasterFileDaoImplTest {
         final TradeSkillMasterItem actualTsmItem = tradeSkillMasterItemDao.read(testItem1.getId());
         Assert.assertEquals(testItem1, actualTsmItem);
 
-
-    }
-
-    @Test
-    public void delete() throws Exception {
 
     }
 

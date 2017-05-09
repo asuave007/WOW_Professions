@@ -17,8 +17,8 @@ import java.util.Set;
 @Component
 public class EnchantLineProcessorImpl implements EnchantLineProcessor <Set<Enchant>> {
 
-    private Logger logger = LoggerFactory.getLogger(EnchantLineProcessorImpl.class);
-    private Set<Enchant> set = new HashSet<>();
+    private final Logger logger = LoggerFactory.getLogger(EnchantLineProcessorImpl.class);
+    private final Set<Enchant> set = new HashSet<>();
     private Map<Integer,TradeSkillMasterItem> craftingMaterialMap;
 
     @Override

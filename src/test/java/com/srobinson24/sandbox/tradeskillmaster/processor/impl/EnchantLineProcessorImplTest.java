@@ -1,4 +1,4 @@
-package com.srobinson24.sandbox.tradeskillmaster.processor;
+package com.srobinson24.sandbox.tradeskillmaster.processor.impl;
 
 import com.srobinson24.sandbox.tradeskillmaster.domain.TradeSkillMasterItem;
 import com.srobinson24.sandbox.tradeskillmaster.processor.impl.EnchantLineProcessorImpl;

@@ -11,7 +11,7 @@ import java.util.SortedSet;
  */
 public interface PricingService {
 
-    void getPricedEnchants() throws IOException;
+    void getPricedEnchants();
 
     SortedSet<Enchant> sortByProfit(Set<Enchant> enchants);
 }

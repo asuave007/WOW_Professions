@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 @Service
 public class PricingServiceImpl implements PricingService {
 
-    private Logger logger = LoggerFactory.getLogger(PricingServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(PricingServiceImpl.class);
 
     @Value("${pricing.threshold}")
     private int profitThreshold;
@@ -43,7 +43,7 @@ public class PricingServiceImpl implements PricingService {
     }
 
 
-    public void getPricedEnchants() throws IOException {
+    public void getPricedEnchants() {
 
         final Map<Integer, TradeSkillMasterItem> craftingItemsMap = itemService.readCraftingItems();
         final Set<Enchant> enchants = itemService.readEnchants(craftingItemsMap);
@@ -62,7 +62,7 @@ public class PricingServiceImpl implements PricingService {
         logger.info("**FINAL SOLUTIONS**");
         if (printAll) logger.info("Printing Everything");
         else logger.info("Printing everything about profit threshold {} gold", profitThreshold);
-        int totalCraftingCost = 0;
+//        int totalCraftingCost = 0;
         int totalProfit = 0;
 
         final DecimalFormat formatter = new DecimalFormat("###,###");
@@ -101,7 +101,7 @@ public class PricingServiceImpl implements PricingService {
         logger.info("NOT PROFITABLE: {}", notProfitableEnchantsOnHand.size());
         printNames (notProfitableEnchantsOnHand);
 
-        totalCraftingCost = calculateCraftingCost (profitableToCraftEnchants);
+        int totalCraftingCost = calculateCraftingCost (profitableToCraftEnchants);
 
 
         logger.info("Total Profit: {} Total Outlays: {}", formatter.format(totalProfit), formatter.format(totalCraftingCost));
@@ -123,8 +123,7 @@ public class PricingServiceImpl implements PricingService {
     }
 
     private int calculateCraftingCost(Set<Enchant> profitableToCraftEnchants) {
-        final int craftingCost = profitableToCraftEnchants.stream().mapToInt(profitProcessor::getCraftingCost).sum();
-        return craftingCost;
+        return profitableToCraftEnchants.stream().mapToInt(profitProcessor::getCraftingCost).sum();
     }
 
     private void printNames(Set<Enchant> onHandProfitableEnchants) {

@@ -1,6 +1,5 @@
 package com.srobinson24.sandbox.tradeskillmaster.dao.impl;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.srobinson24.sandbox.tradeskillmaster.dao.TradeSkillMasterItemDao;
 import com.srobinson24.sandbox.tradeskillmaster.domain.TradeSkillMasterItem;
@@ -9,7 +8,6 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
@@ -30,7 +28,7 @@ public class FileTradeSkillMasterItemDaoImpl implements TradeSkillMasterItemDao 
     @Value("${save.file}")
     private String fileName;
 
-    private File saveFile;
+    private final File saveFile;
 
     @Autowired
     FileTradeSkillMasterItemDaoImpl (final File saveFile) {
@@ -39,17 +37,16 @@ public class FileTradeSkillMasterItemDaoImpl implements TradeSkillMasterItemDao 
 
 
     @Override
-    public boolean saveAll (Set<TradeSkillMasterItem> tradeSkillMasterItemSet) {
+    public void saveAll (Set<TradeSkillMasterItem> tradeSkillMasterItemSet) {
         logger.debug("done updating, saving, {}", tradeSkillMasterItemSet);
 
         for (TradeSkillMasterItem tradeSkillMasterItem : tradeSkillMasterItemSet) {
             save(tradeSkillMasterItem);
         }
-        return true;
     }
 
     @Override
-    public boolean save(TradeSkillMasterItem tsmItem) {
+    public void save(TradeSkillMasterItem tsmItem) {
         try {
             FileUtils.touch(saveFile); //creates the saveFile if it does not exist
         } catch (IOException ex) {
@@ -64,7 +61,6 @@ public class FileTradeSkillMasterItemDaoImpl implements TradeSkillMasterItemDao 
         } catch (IOException ex) {
             throw new RuntimeFileProcessingException("IO exception for saveFile: " + saveFile.getAbsolutePath(), ex);
         }
-        return true;
     }
 
 
@@ -75,6 +71,7 @@ public class FileTradeSkillMasterItemDaoImpl implements TradeSkillMasterItemDao 
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Map<Integer, TradeSkillMasterItem> readAll () {
         logger.debug("Reading all items from disk");
 //        final File file = new File(fileName);
@@ -83,28 +80,13 @@ public class FileTradeSkillMasterItemDaoImpl implements TradeSkillMasterItemDao 
         try (final ObjectInputStream ois = new ObjectInputStream(new FileInputStream(saveFile))) {
             return Map.class.<Integer, TradeSkillMasterItem>cast(ois.readObject());
         } catch (EOFException ex) {
+            //this happens if the file is empty
             logger.error("THIS NEEDS FIXED, WHY AM I HERE!", ex);
             return Maps.newHashMap(); //fixme: REALLY??!?! expected behaviour????
         } catch (IOException | ClassNotFoundException ex) {
             throw new RuntimeFileProcessingException(ex);
         }
 
-    }
-
-    @Override
-    public boolean delete(TradeSkillMasterItem tsmItem) {
-        Preconditions.checkNotNull(tsmItem);
-        final File saveFile = new File(fileName);
-        final Map<Integer, TradeSkillMasterItem> itemMap = readAll(); // read from saveFile
-        //next line opens the file AND deletes all the file's contents
-        try (final ObjectOutputStream oos = new ObjectOutputStream(Files.newOutputStream(saveFile.toPath(), StandardOpenOption.TRUNCATE_EXISTING))){
-            final TradeSkillMasterItem removedItem = itemMap.remove(tsmItem.getId());
-            oos.writeObject(itemMap); // write object back out
-            oos.flush();
-            return tsmItem.equals(removedItem) || removedItem == null; // should always be true
-        } catch (IOException ex) {
-            throw new RuntimeFileProcessingException("IO exception for saveFile: " + saveFile.getAbsolutePath(), ex);
-        }
     }
 
 }

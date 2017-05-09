@@ -16,8 +16,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.Set;
 
 /**
  * Created by srobinso on 4/18/2017.
@@ -25,7 +23,7 @@ import java.util.Set;
 @Service
 public class ItemUpdateServiceImpl implements ItemUpdateService {
 
-    private Logger logger = LoggerFactory.getLogger(ItemUpdateServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(ItemUpdateServiceImpl.class);
 
     @Value("${url}")
     private String url;

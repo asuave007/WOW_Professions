@@ -1,7 +1,6 @@
 package com.srobinson24.sandbox.tradeskillmaster.client;
 
 import com.srobinson24.sandbox.tradeskillmaster.service.PricingService;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
