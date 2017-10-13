@@ -7,6 +7,7 @@ import com.srobinson24.sandbox.tradeskillmaster.dao.TradeSkillMasterItemDao;
 import com.srobinson24.sandbox.tradeskillmaster.domain.Enchant;
 import com.srobinson24.sandbox.tradeskillmaster.domain.TradeSkillMasterItem;
 import com.srobinson24.sandbox.tradeskillmaster.exception.RuntimeFileProcessingException;
+import com.srobinson24.sandbox.tradeskillmaster.exception.RuntimeHttpException;
 import com.srobinson24.sandbox.tradeskillmaster.processor.EnchantLineProcessor;
 import com.srobinson24.sandbox.tradeskillmaster.service.ItemService;
 import com.srobinson24.sandbox.tradeskillmaster.service.ItemUpdateService;
@@ -14,11 +15,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -49,8 +52,8 @@ public class ItemServiceImpl implements ItemService {
     private final LineProcessor<Map<Integer,TradeSkillMasterItem>> craftingMaterialsLineProcessor;
 
     @Autowired
-    public ItemServiceImpl(final TradeSkillMasterItemDao tsmItemDao,
-                           final ItemUpdateService itemUpdateService,
+    public ItemServiceImpl(@Qualifier ("fileTradeSkillMasterItemDaoImpl2") final TradeSkillMasterItemDao tsmItemDao,
+                           @Qualifier("allItemsUpdateService") ItemUpdateService itemUpdateService,
                            final EnchantLineProcessor<Set<Enchant>> enchantLineProcessor,
                            final LineProcessor<Map<Integer, TradeSkillMasterItem>> craftingMaterialsLineProcessor) {
         this.tradeSkillMasterItemDao = tsmItemDao;
@@ -85,13 +88,28 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Map<Integer, TradeSkillMasterItem> updateItemInformation(final Set <TradeSkillMasterItem> allItems) {
-        logger.debug("updating item information on items: {}", allItems);
-        updateFromCache(allItems);
-        final Set<TradeSkillMasterItem> itemsToUpdate = findItemsToUpdate(allItems);
-        callUpdateService(itemsToUpdate);
-        tradeSkillMasterItemDao.saveAll(allItems);
+    public Map<Integer, TradeSkillMasterItem> updateItemInformation(final Set <TradeSkillMasterItem> itemsToPrice) {
+        logger.debug("updating information on items: {}", itemsToPrice);
+        updateCache();
+        updateItemsToPrice(itemsToPrice);
+//        final Set<TradeSkillMasterItem> itemsToUpdate = findItemsToUpdate(itemsToPrice);
+//        callUpdateService(itemsToUpdate);
+//        tradeSkillMasterItemDao.saveAll(itemsToPrice);
         return tradeSkillMasterItemDao.readAll();
+    }
+
+    public void updateCache() {
+        final Map<Integer, TradeSkillMasterItem> allItemsFromDisk = tradeSkillMasterItemDao.readAll();
+        if (allItemsFromDisk == null
+                || allItemsFromDisk.isEmpty()
+                || allItemsFromDisk.entrySet().iterator().next().getValue().getLastUpdate() == null
+                ||allItemsFromDisk.entrySet().iterator().next().getValue().getLastUpdate().isBefore(LocalDateTime.now().minusMinutes(minutesBeforeUpdate))) {
+            final Map<Integer, TradeSkillMasterItem> allItemsFromService = itemUpdateService.update();
+            tradeSkillMasterItemDao.saveAll(allItemsFromService);
+            logger.info("Updated the cache from the service");
+        } else {
+            logger.info("Did NOT update the cache from service");
+        }
     }
 
     public Set <TradeSkillMasterItem> findItemsToUpdate(Set<TradeSkillMasterItem> allItems) {
@@ -102,9 +120,12 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public void updateFromCache(Set<TradeSkillMasterItem> enchantsFromFile) {
+    public void updateItemsToPrice(Set<TradeSkillMasterItem> enchantsFromFile) {
+
+        final Map<Integer, TradeSkillMasterItem> allItemsFromDisk = tradeSkillMasterItemDao.readAll();
+
         for (TradeSkillMasterItem enchant : enchantsFromFile) {
-            final TradeSkillMasterItem itemFromDisk = tradeSkillMasterItemDao.read(enchant.getId());
+            final TradeSkillMasterItem itemFromDisk = allItemsFromDisk.get(enchant.getId());
             if (itemFromDisk != null
                     && itemFromDisk.getLastUpdate() != null
                     && !itemFromDisk.getLastUpdate().plusMinutes(minutesBeforeUpdate).isBefore(LocalDateTime.now())) {
@@ -129,6 +150,25 @@ public class ItemServiceImpl implements ItemService {
             BeanUtils.copyProperties(updatedTsmItem, item);
             item.setLastUpdate(LocalDateTime.now());
         });
+
+    }
+
+
+    public void callUpdateService2(final Set<TradeSkillMasterItem> itemsToUpdate) {
+        logger.info("calling update service for: {}", itemsToUpdate);
+
+        try {
+            itemUpdateService.updateItemsFromRemoteService(itemsToUpdate);
+        } catch (URISyntaxException ex) {
+            throw new RuntimeHttpException(ex);
+        }
+
+//        itemsToUpdate.forEach(item -> {
+//
+//            final TradeSkillMasterItem updatedTsmItem = itemUpdateService.fetchUpdateItemInformation(item.getId());
+//            BeanUtils.copyProperties(updatedTsmItem, item);
+//            item.setLastUpdate(LocalDateTime.now());
+//        });
 
     }
 

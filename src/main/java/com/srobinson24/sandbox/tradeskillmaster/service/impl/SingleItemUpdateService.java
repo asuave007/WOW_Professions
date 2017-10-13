@@ -12,18 +12,23 @@ import org.apache.http.client.fluent.Request;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by srobinso on 4/18/2017.
  */
 @Service
-public class ItemUpdateServiceImpl implements ItemUpdateService {
+public class SingleItemUpdateService implements ItemUpdateService {
 
-    private final Logger logger = LoggerFactory.getLogger(ItemUpdateServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(SingleItemUpdateService.class);
 
     @Value("${url}")
     private String url;
@@ -38,6 +43,21 @@ public class ItemUpdateServiceImpl implements ItemUpdateService {
             throw new RuntimeHttpException(ex);
         }
         return tsmItem;
+    }
+
+    @Override
+    public void updateItemsFromRemoteService(Set<TradeSkillMasterItem> itemsToUpdate) {
+        itemsToUpdate.forEach(item -> {
+
+            final TradeSkillMasterItem updatedTsmItem = fetchUpdateItemInformation(item.getId());
+            BeanUtils.copyProperties(updatedTsmItem, item);
+            item.setLastUpdate(LocalDateTime.now());
+        });
+    }
+
+    @Override
+    public Map<Integer, TradeSkillMasterItem> update() {
+        return null;
     }
 
     private TradeSkillMasterItem callUpdateService(final String urlWithId) throws IOException {
@@ -63,7 +83,7 @@ public class ItemUpdateServiceImpl implements ItemUpdateService {
         try {
             return objectMapper.readValue(responseContent, TradeSkillMasterItem.class);
         } catch (IOException ex) {
-            throw new RuntimeException(ex);
+            throw new RuntimeHttpException(ex);
         }
 
     }

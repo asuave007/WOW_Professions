@@ -10,8 +10,11 @@ import java.util.Set;
  */
 public interface TradeSkillMasterItemDao {
 
-    void save(TradeSkillMasterItem tradeSkillMasterItem);
-    void saveAll(Set<TradeSkillMasterItem> items);
+//    void save(TradeSkillMasterItem tradeSkillMasterItem);
+//    void saveAll(Set<TradeSkillMasterItem> items);
+
+    void saveAll(Map<Integer, TradeSkillMasterItem> map);
+
     TradeSkillMasterItem read (Integer id);
     Map<Integer, TradeSkillMasterItem> readAll ();
 

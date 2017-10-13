@@ -23,13 +23,13 @@ public class ProfitProcessorImpl implements ProfitProcessor {
     private double auctionHousePercent = 0;
 
     @Override
-    public int  getCraftingCost(Enchant enchant) {
+    public long getCraftingCost(Enchant enchant) {
         logger.trace("Finding Crafting Cost for enchant: {}", enchant.getName());
 
-        int craftingCost = 0;
+        long craftingCost = 0;
 
         for (Map.Entry<TradeSkillMasterItem, Integer> entry : enchant.getCraftingMaterials().entrySet()) {
-            final int marketValue = entry.getKey().getRawMarketValue();
+            final long marketValue = entry.getKey().getRawMarketValue();
             final Integer quantity = entry.getValue();
             craftingCost += marketValue * quantity;
         }
@@ -38,24 +38,24 @@ public class ProfitProcessorImpl implements ProfitProcessor {
     }
 
     @Override
-    public int calculateProfit(Enchant enchant) {
-        final Integer craftingCost = getCraftingCost(enchant);
-        final int minimumBuyout = enchant.getRawMinBuyout();
-        final int auctionHouseCut = (int)(auctionHousePercent * minimumBuyout);
+    public long calculateProfit(Enchant enchant) {
+        final long craftingCost = getCraftingCost(enchant);
+        final long minimumBuyout = enchant.getRawMinBuyout();
+        final long auctionHouseCut = (long)(auctionHousePercent * minimumBuyout);
         return minimumBuyout - auctionHouseCut - craftingCost;
     }
 
     @Override
-    public int truncateSilverAndCopper(int value) {
-        final String s = Integer.toString(value);
-        Preconditions.checkArgument(Integer.toString(value).length() > 4, "Not enough characters in argument: " + value);
+    public long truncateSilverAndCopper(long value) {
+        final String s = Long.toString(value);
+        Preconditions.checkArgument(Long.toString(value).length() > 4, "Not enough characters in argument: " + value);
         final int endGold = s.length() - 4;
         final String goldOnly = s.substring(0, endGold);
-        int intGoldValue = Integer.valueOf(goldOnly);
+        long longGoldValue = Long.valueOf(goldOnly);
         final int silverBeginIndex = s.length() - 3;
         final String roundingDigit = s.substring(endGold, silverBeginIndex);
-        if (Integer.valueOf(roundingDigit) >= 5) intGoldValue++;
-        return intGoldValue;
+        if (Integer.valueOf(roundingDigit) >= 5) longGoldValue++;
+        return longGoldValue;
     }
 
 }

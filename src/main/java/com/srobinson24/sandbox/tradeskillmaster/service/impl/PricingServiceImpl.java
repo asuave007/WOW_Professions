@@ -68,8 +68,8 @@ public class PricingServiceImpl implements PricingService {
         final DecimalFormat formatter = new DecimalFormat("###,###");
         //todo: delete this loop
         for (Enchant e : profitableEnchants) {
-            final int craftingCost = profitProcessor.getCraftingCost(e);
-            final Integer profit = profitProcessor.calculateProfit(e);
+            final long craftingCost = profitProcessor.getCraftingCost(e);
+            final long profit = profitProcessor.calculateProfit(e);
             totalProfit += profit;
             logger.info("Profit: [{}] Sales Price: [{}] Crafting Cost: [{}] Name: [{}] ",
                     String.format("%6s", (formatter.format(profit))),
@@ -101,7 +101,7 @@ public class PricingServiceImpl implements PricingService {
         logger.info("NOT PROFITABLE: {}", notProfitableEnchantsOnHand.size());
         printNames (notProfitableEnchantsOnHand);
 
-        int totalCraftingCost = calculateCraftingCost (profitableToCraftEnchants);
+        long totalCraftingCost = calculateCraftingCost (profitableToCraftEnchants);
 
 
         logger.info("Total Profit: {} Total Outlays: {}", formatter.format(totalProfit), formatter.format(totalCraftingCost));
@@ -122,8 +122,8 @@ public class PricingServiceImpl implements PricingService {
 
     }
 
-    private int calculateCraftingCost(Set<Enchant> profitableToCraftEnchants) {
-        return profitableToCraftEnchants.stream().mapToInt(profitProcessor::getCraftingCost).sum();
+    private long calculateCraftingCost(Set<Enchant> profitableToCraftEnchants) {
+        return profitableToCraftEnchants.stream().mapToLong(profitProcessor::getCraftingCost).sum();
     }
 
     private void printNames(Set<Enchant> onHandProfitableEnchants) {
@@ -162,7 +162,7 @@ public class PricingServiceImpl implements PricingService {
         final TreeSet<Enchant> sortedSet = new TreeSet<>((o1, o2) -> {
             Preconditions.checkNotNull(o1);
             Preconditions.checkNotNull(o2);
-            return Integer.compare(profitProcessor.calculateProfit(o2), profitProcessor.calculateProfit(o1));
+            return Long.compare(profitProcessor.calculateProfit(o2), profitProcessor.calculateProfit(o1));
         });
 
         if (printAll) {

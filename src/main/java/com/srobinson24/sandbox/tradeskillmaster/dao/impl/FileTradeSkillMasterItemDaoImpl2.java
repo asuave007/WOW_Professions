@@ -21,9 +21,9 @@ import java.util.Set;
  * Created by srobinso on 3/28/2017.
  */
 @Repository
-public class FileTradeSkillMasterItemDaoImpl implements TradeSkillMasterItemDao {
+public class FileTradeSkillMasterItemDaoImpl2 implements TradeSkillMasterItemDao {
 
-    private final Logger logger = LoggerFactory.getLogger(FileTradeSkillMasterItemDaoImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(FileTradeSkillMasterItemDaoImpl2.class);
 
     @Value("${save.file}")
     private String fileName;
@@ -31,11 +31,26 @@ public class FileTradeSkillMasterItemDaoImpl implements TradeSkillMasterItemDao 
     private final File saveFile;
 
     @Autowired
-    FileTradeSkillMasterItemDaoImpl (final File saveFile) {
+    FileTradeSkillMasterItemDaoImpl2(final File saveFile) {
         this.saveFile = saveFile;
     }
 
 
+    @Override
+    public void saveAll(Map<Integer, TradeSkillMasterItem> map) {
+        try {
+            FileUtils.touch(saveFile); //creates the saveFile if it does not exist
+        } catch (IOException ex) {
+            throw new RuntimeFileProcessingException("Could not create saveFile: " + saveFile.getAbsolutePath(), ex);
+        }
+        //next line opens the file AND deletes all the file's contents
+        try (final ObjectOutputStream oos = new ObjectOutputStream(Files.newOutputStream(saveFile.toPath(), StandardOpenOption.TRUNCATE_EXISTING))){
+            oos.writeObject(map); // this is the actual save back to the saveFile
+            oos.flush();
+        } catch (IOException ex) {
+            throw new RuntimeFileProcessingException("IO exception for saveFile: " + saveFile.getAbsolutePath(), ex);
+        }
+    }
 
     public void save(TradeSkillMasterItem tsmItem) {
         try {
@@ -56,11 +71,6 @@ public class FileTradeSkillMasterItemDaoImpl implements TradeSkillMasterItemDao 
 
 
     @Override
-    public void saveAll(Map<Integer, TradeSkillMasterItem> map) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public TradeSkillMasterItem read(Integer id) {
         final Map<Integer, TradeSkillMasterItem> itemMap = readAll();
         return itemMap.get(id);
@@ -69,8 +79,6 @@ public class FileTradeSkillMasterItemDaoImpl implements TradeSkillMasterItemDao 
     @Override
     @SuppressWarnings("unchecked")
     public Map<Integer, TradeSkillMasterItem> readAll () {
-        logger.debug("Reading all items from disk");
-//        final File file = new File(fileName);
         if (!saveFile.exists()) return Maps.newHashMap();
 
         try (final ObjectInputStream ois = new ObjectInputStream(new FileInputStream(saveFile))) {

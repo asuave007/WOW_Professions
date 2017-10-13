@@ -2,6 +2,7 @@ package com.srobinson24.sandbox.tradeskillmaster.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -10,23 +11,26 @@ import java.time.LocalDateTime;
  * Created by srobinso on 3/24/2017.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonNaming
 public class TradeSkillMasterItem implements Serializable {
 
+    @JsonProperty("Id")
     private int id;
+    @JsonProperty("Name")
     private String name;
     @JsonProperty("MinBuyout")
-    private int rawMinBuyout;
+    private long rawMinBuyout;
     private LocalDateTime lastUpdate;
     @JsonProperty("NumAuctions")
     private int numberOfAuctions;
     @JsonProperty("MarketValue")
-    private int rawMarketValue;
+    private long rawMarketValue;
 
-    public int getRawMarketValue() {
+    public long getRawMarketValue() {
         return rawMarketValue;
     }
 
-    public void setRawMarketValue(int rawMarketValue) {
+    public void setRawMarketValue(long rawMarketValue) {
         this.rawMarketValue = rawMarketValue;
     }
 
@@ -62,11 +66,11 @@ public class TradeSkillMasterItem implements Serializable {
         this.name = name;
     }
 
-    public int getRawMinBuyout() {
+    public long getRawMinBuyout() {
         return rawMinBuyout;
     }
 
-    public void setRawMinBuyout(int rawMinBuyout) {
+    public void setRawMinBuyout(long rawMinBuyout) {
         this.rawMinBuyout = rawMinBuyout;
     }
 

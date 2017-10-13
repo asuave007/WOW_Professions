@@ -31,7 +31,7 @@ public class ProfitProcessorImplTest {
         markOfTheTrainedSoldier.addCraftingMaterial(leyLightShard, 10);
         markOfTheTrainedSoldier.addCraftingMaterial(arkhana, 0);
 
-        final int actual = new ProfitProcessorImpl().getCraftingCost(markOfTheTrainedSoldier);
+        final long actual = new ProfitProcessorImpl().getCraftingCost(markOfTheTrainedSoldier);
 
         Assert.assertEquals(57700000, actual);
 
@@ -58,7 +58,7 @@ public class ProfitProcessorImplTest {
         final ProfitProcessorImpl profitProcessorImpl = new ProfitProcessorImpl();
         ReflectionTestUtils.setField(profitProcessorImpl, "auctionHousePercent", 0.05);
 
-        final int actual = profitProcessorImpl.calculateProfit(markOfTheTrainedSoldier);
+        final long actual = profitProcessorImpl.calculateProfit(markOfTheTrainedSoldier);
 
         Assert.assertEquals(37691500, actual);
 
@@ -67,13 +67,13 @@ public class ProfitProcessorImplTest {
     @Test
     public void testTruncateInsignificantDigitsRoundUp() throws Exception {
         final ProfitProcessor ProfitProcessor = new ProfitProcessorImpl();
-        final int actual = ProfitProcessor.truncateSilverAndCopper(407441);
+        final long actual = ProfitProcessor.truncateSilverAndCopper(407441);
         Assert.assertEquals(41, actual);
     }
 
     @Test
     public void testTruncateInsignificantDigitsRoundDown() throws Exception {
-        final int actual = new ProfitProcessorImpl().truncateSilverAndCopper(404441);
+        final long actual = new ProfitProcessorImpl().truncateSilverAndCopper(404441);
         Assert.assertEquals(40, actual);
     }
 

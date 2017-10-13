@@ -1,23 +1,43 @@
 package com.srobinson24.sandbox.tradeskillmaster.service.impl;
 
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.srobinson24.sandbox.tradeskillmaster.dao.TradeSkillMasterItemDao;
 import com.srobinson24.sandbox.tradeskillmaster.domain.Enchant;
 import com.srobinson24.sandbox.tradeskillmaster.domain.TradeSkillMasterItem;
 import com.srobinson24.sandbox.tradeskillmaster.service.ItemUpdateService;
+import com.sun.java.swing.plaf.motif.MotifTreeUI;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by srobinso on 3/24/2017.
  */
 public class ItemServiceImplTest {
+
+    @Test
+    public void testUpdateCache () {
+        final TradeSkillMasterItemDao mockDao = Mockito.mock(TradeSkillMasterItemDao.class);
+        Mockito.when(mockDao.readAll()).thenReturn(new HashMap<>());
+
+        final ItemUpdateService mockUpdateService = Mockito.mock(ItemUpdateService.class);
+        Mockito.when(mockUpdateService.update()).thenReturn(new HashMap<>());
+
+        final ItemServiceImpl itemService = new ItemServiceImpl(mockDao, mockUpdateService, null, null);
+
+        itemService.updateCache();
+        Mockito.verify(mockDao).readAll();
+        Mockito.verify(mockUpdateService).update();
+
+    }
+
+
+
     @Test
     public void testUpdateFromCacheItemNotOnDisk() throws Exception {
 
@@ -35,7 +55,7 @@ public class ItemServiceImplTest {
         Enchant enchant = new Enchant();
         enchant.setId(38);
         enchant.setName("Mark of the Trained Soldier");
-        itemService.updateFromCache(Collections.singleton(enchant));
+        itemService.updateItemsToPrice(Collections.singleton(enchant));
 
         Assert.assertEquals(null, enchant.getLastUpdate());
 
@@ -49,8 +69,11 @@ public class ItemServiceImplTest {
         final LocalDateTime lastUpdate = LocalDateTime.now().minusMinutes(30);
         expected.setLastUpdate(lastUpdate); //updated 30 min ago
 
+        final Map<Integer, TradeSkillMasterItem> mockedDiskItems = Maps.newHashMap();
+        mockedDiskItems.put(expected.getId(), expected);
+
         final TradeSkillMasterItemDao mockDao = Mockito.mock(TradeSkillMasterItemDao.class);
-        Mockito.when(mockDao.read(38)).thenReturn(expected);
+        Mockito.when(mockDao.readAll()).thenReturn(mockedDiskItems);
 
         final ItemUpdateService mockUpdateService = Mockito.mock(ItemUpdateService.class);
         Mockito.when(mockUpdateService.fetchUpdateItemInformation(38)).thenReturn(expected);
@@ -62,7 +85,7 @@ public class ItemServiceImplTest {
         Enchant enchant = new Enchant();
         enchant.setId(38);
         enchant.setName("Mark of the Trained Soldier");
-        itemService.updateFromCache(Collections.singleton(enchant));
+        itemService.updateItemsToPrice(Collections.singleton(enchant));
 
         Assert.assertEquals(lastUpdate, enchant.getLastUpdate());
 
