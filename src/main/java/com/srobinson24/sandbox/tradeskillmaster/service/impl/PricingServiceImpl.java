@@ -12,12 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -36,8 +32,7 @@ public class PricingServiceImpl implements PricingService {
     private final ProfitProcessor profitProcessor;
 
     @Autowired
-    public PricingServiceImpl(final ItemService itemService,
-                              final ProfitProcessor ProfitProcessor) {
+    public PricingServiceImpl(final ItemService itemService, final ProfitProcessor ProfitProcessor) {
         this.itemService = itemService;
         this.profitProcessor = ProfitProcessor;
     }
@@ -45,12 +40,12 @@ public class PricingServiceImpl implements PricingService {
 
     public void getPricedEnchants() {
 
-        final Map<Integer, TradeSkillMasterItem> craftingItemsMap = itemService.readCraftingItems();
-        final Set<Enchant> enchants = itemService.readEnchants(craftingItemsMap);
+        final Map<Integer, TradeSkillMasterItem> craftingItemsMap = itemService.readCraftingItemsFromFile();
+        final Set<Enchant> enchants = itemService.readEnchantsFromFile(craftingItemsMap);
 
         final Set<TradeSkillMasterItem> allItems = Stream.concat(enchants.stream(), craftingItemsMap.values().stream()).collect(Collectors.toSet());
         logger.debug("Items to update: {}", allItems);
-        final Map<Integer, TradeSkillMasterItem> itemMap = itemService.updateItemInformation(allItems);
+        itemService.updateItemInformation(allItems);
 
         final Set<Enchant> profitableEnchants = sortByProfit(enchants);
         displayOutput(profitableEnchants, craftingItemsMap, enchants);
@@ -61,8 +56,7 @@ public class PricingServiceImpl implements PricingService {
         logger.info("*******************");
         logger.info("**FINAL SOLUTIONS**");
         if (printAll) logger.info("Printing Everything");
-        else logger.info("Printing everything about profit threshold {} gold", profitThreshold);
-//        int totalCraftingCost = 0;
+        else logger.info("Printing everything about profit threshold {} gold", profitThreshold / 10000);
         int totalProfit = 0;
 
         final DecimalFormat formatter = new DecimalFormat("###,###");
@@ -72,9 +66,9 @@ public class PricingServiceImpl implements PricingService {
             final long profit = profitProcessor.calculateProfit(e);
             totalProfit += profit;
             logger.info("Profit: [{}] Sales Price: [{}] Crafting Cost: [{}] Name: [{}] ",
-                    String.format("%6s", (formatter.format(profit))),
-                    String.format("%6s", formatter.format(e.getRawMinBuyout())),
-                    String.format("%6s", formatter.format(craftingCost)),
+                    String.format("%6s", (formatter.format(profit / 10000))),
+                    String.format("%6s", formatter.format(e.getRawMinBuyout() / 10000)),
+                    String.format("%6s", formatter.format(craftingCost / 10000)),
                     e.getName());
         }
 
@@ -103,23 +97,30 @@ public class PricingServiceImpl implements PricingService {
 
         long totalCraftingCost = calculateCraftingCost (profitableToCraftEnchants);
 
+        totalProfit = totalProfit / 10000;
+        totalCraftingCost = totalCraftingCost / 10000;
+
 
         logger.info("Total Profit: {} Total Outlays: {}", formatter.format(totalProfit), formatter.format(totalCraftingCost));
-//
-//        for (Map.Entry<Integer, TradeSkillMasterItem> tsmItemEntry : craftingItems.entrySet()) {
-//            if (Integer.valueOf(124440).equals(tsmItemEntry.getKey())) arkhanaAvailable = tsmItemEntry.getValue().getNumberOfAuctions();
-//            else if (Integer.valueOf(124441).equals(tsmItemEntry.getKey())) shardsAvailable = tsmItemEntry.getValue().getNumberOfAuctions();
-//            else if (Integer.valueOf(124442).equals(tsmItemEntry.getKey())) crystalsAvailable = tsmItemEntry.getValue().getNumberOfAuctions(); // 124442
-//            else throw new RuntimeException("Shit Dun Broke");
-//        }
-//
-//
-//        crystals = profitableToCraftEnchants.parallelStream().mapToInt(Enchant::getChaosCrystalsRequired).sum();
-//        shards = profitableToCraftEnchants.parallelStream().mapToInt(Enchant::getLeylightShardsRequired).sum();
-//        arkhana = profitableToCraftEnchants.parallelStream().mapToInt(Enchant::getArkhanaRequired).sum();
-//
-//        logger.info("Needed/Quantity for Sale - Crystals: {}/{} Shards: {}/{} Arkhana: {}/{}", crystals, crystalsAvailable, shards, shardsAvailable, arkhana, arkhanaAvailable);
 
+        final Map<TradeSkillMasterItem, Integer> tradeSkillMasterItemIntegerMap = calculateMats(profitableToCraftEnchants);
+        tradeSkillMasterItemIntegerMap.forEach((item, count) -> logger.info("Total Mats: {}:{}", item.getName(), count));
+
+    }
+
+    private Map<TradeSkillMasterItem, Integer> calculateMats(Set<Enchant> profitableToCraftEnchants) {
+        final Map<TradeSkillMasterItem, Integer> totalMats = new HashMap<>();
+        for (final Enchant profitableToCraftEnchant : profitableToCraftEnchants) {
+            final Map<TradeSkillMasterItem, Integer> craftingMaterials = profitableToCraftEnchant.getCraftingMaterials();
+            for (Map.Entry<TradeSkillMasterItem, Integer> entry : craftingMaterials.entrySet()) {
+                final TradeSkillMasterItem tempItem = new TradeSkillMasterItem(entry.getKey().getId());
+                final Integer integer = totalMats.get(tempItem);
+                if (integer == null) totalMats.put(entry.getKey(), entry.getValue());
+                else totalMats.put(entry.getKey(), entry.getValue() + totalMats.get(tempItem));
+            }
+        }
+
+        return totalMats;
     }
 
     private long calculateCraftingCost(Set<Enchant> profitableToCraftEnchants) {
@@ -131,29 +132,6 @@ public class PricingServiceImpl implements PricingService {
             logger.info("{}", onHandProfitableEnchant.getName());
         }
     }
-//
-//    @Override
-//    public SortedSet<Enchant> sortByProfit(Set<Enchant> enchants) {
-//        final TreeSet<Enchant> sortedSet = new TreeSet<>((o1, o2) -> {
-//            Preconditions.checkNotNull(o1);
-//            Preconditions.checkNotNull(o2);
-//            return profitProcessor.calculateProfit(o2).compareTo(profitProcessor.calculateProfit(o1));
-//        });
-//
-//        if (printAll) {
-//            sortedSet.addAll(enchants);
-//        } else {
-//            final Set<Enchant> profitableEnchants = enchants
-//                    .stream()
-//                    .filter(enchant -> profitProcessor.calculateProfit(enchant) > profitThreshold)
-//                    .collect(Collectors.toSet());
-//
-//            sortedSet.addAll(profitableEnchants);
-//        }
-//
-//        return sortedSet;
-//
-//    }
 
 
     @Override

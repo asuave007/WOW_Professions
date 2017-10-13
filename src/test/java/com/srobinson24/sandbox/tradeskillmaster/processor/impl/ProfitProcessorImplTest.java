@@ -82,4 +82,25 @@ public class ProfitProcessorImplTest {
         new ProfitProcessorImpl().truncateSilverAndCopper(123);
     }
 
+    @Test
+    public void testGetCraftingCost2() {
+        Enchant markOfTheTrainedSoldier = new Enchant();
+
+        final TradeSkillMasterItem chaosCrystal = new TradeSkillMasterItem();
+        chaosCrystal.setId(124442);
+        chaosCrystal.setRawMarketValue(2732500);
+
+        final TradeSkillMasterItem leyLightShard = new TradeSkillMasterItem();
+        leyLightShard.setId(124441);
+        leyLightShard.setRawMarketValue(996998);
+
+        markOfTheTrainedSoldier.addCraftingMaterial(chaosCrystal, 12);
+        markOfTheTrainedSoldier.addCraftingMaterial(leyLightShard, 10);
+
+        final long actual = new ProfitProcessorImpl().getCraftingCost(markOfTheTrainedSoldier);
+
+        Assert.assertEquals(42759980, actual);
+
+    }
+
 }

@@ -11,14 +11,12 @@ import java.util.Set;
  */
 public interface ItemService {
 
-    Map<Integer, TradeSkillMasterItem> readCraftingItems();
+    Map<Integer, TradeSkillMasterItem> readCraftingItemsFromFile();
 
-    Set<Enchant> readEnchants(Map <Integer, TradeSkillMasterItem> craftingMaterialsKeyedOnId);
+    Set<Enchant> readEnchantsFromFile(Map<Integer, TradeSkillMasterItem> craftingMaterialsKeyedOnId);
 
-    Map<Integer, TradeSkillMasterItem> updateItemInformation(Set <TradeSkillMasterItem> enchants);
+    void updateItemInformation(Set<TradeSkillMasterItem> enchants);
 
     void updateItemsToPrice(Set<TradeSkillMasterItem> enchantsFromFile);
-
-    void callUpdateService(Set<TradeSkillMasterItem> itemsToUpdate);
 
 }

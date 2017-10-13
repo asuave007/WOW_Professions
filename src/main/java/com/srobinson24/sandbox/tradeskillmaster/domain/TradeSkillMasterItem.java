@@ -26,6 +26,13 @@ public class TradeSkillMasterItem implements Serializable {
     @JsonProperty("MarketValue")
     private long rawMarketValue;
 
+    public TradeSkillMasterItem(int id) {
+        this.id = id;
+    }
+
+    public TradeSkillMasterItem() {
+    }
+
     public long getRawMarketValue() {
         return rawMarketValue;
     }

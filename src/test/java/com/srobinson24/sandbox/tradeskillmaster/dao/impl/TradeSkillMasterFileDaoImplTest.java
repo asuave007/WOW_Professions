@@ -1,17 +1,18 @@
 package com.srobinson24.sandbox.tradeskillmaster.dao.impl;
 
+import com.google.common.collect.ImmutableMap;
 import com.srobinson24.sandbox.tradeskillmaster.dao.TradeSkillMasterItemDao;
 import com.srobinson24.sandbox.tradeskillmaster.domain.TradeSkillMasterItem;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import java.util.Map;
+
 /**
  * Created by srobinso on 3/28/2017.
  */
-@Ignore
 public class TradeSkillMasterFileDaoImplTest {
 
     @Rule
@@ -28,7 +29,7 @@ public class TradeSkillMasterFileDaoImplTest {
         testTradeSkillMasterItem.setId(141909);
         testTradeSkillMasterItem.setRawMinBuyout(109970000);
 
-//        tradeSkillMasterItemDao.save(testTradeSkillMasterItem); //if not thrown, then we good
+        tradeSkillMasterItemDao.saveAll(ImmutableMap.of(testTradeSkillMasterItem.getId(), testTradeSkillMasterItem)); //if not thrown, then we good
 
     }
 
@@ -46,13 +47,12 @@ public class TradeSkillMasterFileDaoImplTest {
         testItem2.setId(190000);
         testItem2.setRawMinBuyout(170000);
 
-//        tradeSkillMasterItemDao.save(testItem1); //if not thrown, then we good
-//        tradeSkillMasterItemDao.save(testItem2); //if not thrown, then we good
+        tradeSkillMasterItemDao.saveAll(ImmutableMap.of(testItem1.getId(), testItem1, testItem2.getId(), testItem2)); //if not thrown, then we good
 
     }
 
     @Test
-    public void testRead1Item() throws Exception {
+    public void testSave1Read1Item() throws Exception {
         TradeSkillMasterItemDao tradeSkillMasterItemDao = new FileTradeSkillMasterItemDaoImpl(tempFile.newFile("testFile.txt"));
 
         TradeSkillMasterItem testTradeSkillMasterItem = new TradeSkillMasterItem();
@@ -60,11 +60,13 @@ public class TradeSkillMasterFileDaoImplTest {
         testTradeSkillMasterItem.setId(141909);
         testTradeSkillMasterItem.setRawMinBuyout(109970000);
 
-//        tradeSkillMasterItemDao.save(testTradeSkillMasterItem); //if not thrown, then we good
+        tradeSkillMasterItemDao.saveAll(ImmutableMap.of(testTradeSkillMasterItem.getId(), testTradeSkillMasterItem)); //if not thrown, then we good
 
-        final TradeSkillMasterItem readTradeSkillMasterItem = tradeSkillMasterItemDao.read(testTradeSkillMasterItem.getId());
+        final Map<Integer, TradeSkillMasterItem> itemMap = tradeSkillMasterItemDao.readAll();
 
-        Assert.assertEquals(testTradeSkillMasterItem, readTradeSkillMasterItem);
+        final TradeSkillMasterItem tsmItem = itemMap.get(testTradeSkillMasterItem.getId());
+
+        Assert.assertEquals(testTradeSkillMasterItem, tsmItem);
 
 
     }
@@ -83,11 +85,10 @@ public class TradeSkillMasterFileDaoImplTest {
         testItem2.setId(190000);
         testItem2.setRawMinBuyout(170000);
 
-//        tradeSkillMasterItemDao.save(testItem1); //if not thrown, then we good
-//        tradeSkillMasterItemDao.save(testItem2); //if not thrown, then we good
+        tradeSkillMasterItemDao.saveAll(ImmutableMap.of(testItem1.getId(), testItem1, testItem2.getId(), testItem2)); //if not thrown, then we good
 
-        final TradeSkillMasterItem actualTsmItem = tradeSkillMasterItemDao.read(testItem1.getId());
-        Assert.assertEquals(testItem1, actualTsmItem);
+        final Map<Integer, TradeSkillMasterItem> allItems = tradeSkillMasterItemDao.readAll();
+        Assert.assertEquals(testItem1, allItems.get(testItem1.getId()));
 
 
     }

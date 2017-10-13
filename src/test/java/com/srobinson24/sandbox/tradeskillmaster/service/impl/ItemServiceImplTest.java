@@ -1,41 +1,29 @@
 package com.srobinson24.sandbox.tradeskillmaster.service.impl;
 
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.srobinson24.sandbox.tradeskillmaster.dao.TradeSkillMasterItemDao;
 import com.srobinson24.sandbox.tradeskillmaster.domain.Enchant;
 import com.srobinson24.sandbox.tradeskillmaster.domain.TradeSkillMasterItem;
-import com.srobinson24.sandbox.tradeskillmaster.service.ItemUpdateService;
-import com.sun.java.swing.plaf.motif.MotifTreeUI;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collections;
+import java.util.Set;
+
+import static org.hamcrest.Matchers.startsWith;
 
 /**
  * Created by srobinso on 3/24/2017.
  */
 public class ItemServiceImplTest {
 
-    @Test
-    public void testUpdateCache () {
-        final TradeSkillMasterItemDao mockDao = Mockito.mock(TradeSkillMasterItemDao.class);
-        Mockito.when(mockDao.readAll()).thenReturn(new HashMap<>());
-
-        final ItemUpdateService mockUpdateService = Mockito.mock(ItemUpdateService.class);
-        Mockito.when(mockUpdateService.update()).thenReturn(new HashMap<>());
-
-        final ItemServiceImpl itemService = new ItemServiceImpl(mockDao, mockUpdateService, null, null);
-
-        itemService.updateCache();
-        Mockito.verify(mockDao).readAll();
-        Mockito.verify(mockUpdateService).update();
-
-    }
-
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
 
     @Test
@@ -45,49 +33,17 @@ public class ItemServiceImplTest {
         expected.setId(38);
 
         final TradeSkillMasterItemDao mockDao = Mockito.mock(TradeSkillMasterItemDao.class);
-        Mockito.when(mockDao.read(38)).thenReturn(null);
+        Mockito.when(mockDao.readAll()).thenReturn(Collections.EMPTY_MAP);
 
-        final ItemUpdateService mockUpdateService = Mockito.mock(ItemUpdateService.class);
-        Mockito.when(mockUpdateService.fetchUpdateItemInformation(38)).thenReturn(expected);
-
-
-        final ItemServiceImpl itemService = new ItemServiceImpl(mockDao, mockUpdateService, null, null);
+        final ItemServiceImpl itemService = new ItemServiceImpl(mockDao, null, null, null);
         Enchant enchant = new Enchant();
         enchant.setId(38);
         enchant.setName("Mark of the Trained Soldier");
+
+        thrown.expect(RuntimeException.class);
+        thrown.expectMessage(startsWith("Item ID was not found in list of all items"));
         itemService.updateItemsToPrice(Collections.singleton(enchant));
 
-        Assert.assertEquals(null, enchant.getLastUpdate());
-
-    }
-
-    @Test
-    public void testUpdateFromCacheItemIsOnDisk() throws Exception {
-
-        final TradeSkillMasterItem expected = new TradeSkillMasterItem();
-        expected.setId(38);
-        final LocalDateTime lastUpdate = LocalDateTime.now().minusMinutes(30);
-        expected.setLastUpdate(lastUpdate); //updated 30 min ago
-
-        final Map<Integer, TradeSkillMasterItem> mockedDiskItems = Maps.newHashMap();
-        mockedDiskItems.put(expected.getId(), expected);
-
-        final TradeSkillMasterItemDao mockDao = Mockito.mock(TradeSkillMasterItemDao.class);
-        Mockito.when(mockDao.readAll()).thenReturn(mockedDiskItems);
-
-        final ItemUpdateService mockUpdateService = Mockito.mock(ItemUpdateService.class);
-        Mockito.when(mockUpdateService.fetchUpdateItemInformation(38)).thenReturn(expected);
-
-
-        final ItemServiceImpl itemService = new ItemServiceImpl(mockDao, mockUpdateService, null, null);
-        ReflectionTestUtils.setField(itemService,"minutesBeforeUpdate", 60); //set update refresh interval to 60 min
-
-        Enchant enchant = new Enchant();
-        enchant.setId(38);
-        enchant.setName("Mark of the Trained Soldier");
-        itemService.updateItemsToPrice(Collections.singleton(enchant));
-
-        Assert.assertEquals(lastUpdate, enchant.getLastUpdate());
 
     }
 

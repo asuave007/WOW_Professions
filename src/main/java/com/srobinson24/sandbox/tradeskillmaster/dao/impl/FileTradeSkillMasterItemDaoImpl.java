@@ -15,7 +15,6 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by srobinso on 3/28/2017.
@@ -31,46 +30,30 @@ public class FileTradeSkillMasterItemDaoImpl implements TradeSkillMasterItemDao 
     private final File saveFile;
 
     @Autowired
-    FileTradeSkillMasterItemDaoImpl (final File saveFile) {
+    FileTradeSkillMasterItemDaoImpl(final File saveFile) {
         this.saveFile = saveFile;
     }
 
 
-
-    public void save(TradeSkillMasterItem tsmItem) {
+    @Override
+    public void saveAll(Map<Integer, TradeSkillMasterItem> map) {
         try {
             FileUtils.touch(saveFile); //creates the saveFile if it does not exist
         } catch (IOException ex) {
             throw new RuntimeFileProcessingException("Could not create saveFile: " + saveFile.getAbsolutePath(), ex);
         }
-        final Map<Integer, TradeSkillMasterItem> itemMap = readAll(); // read from saveFile
         //next line opens the file AND deletes all the file's contents
         try (final ObjectOutputStream oos = new ObjectOutputStream(Files.newOutputStream(saveFile.toPath(), StandardOpenOption.TRUNCATE_EXISTING))){
-            itemMap.put(tsmItem.getId(), tsmItem); // save to map
-            oos.writeObject(itemMap); // this is the actual save back to the saveFile
+            oos.writeObject(map); // this is the actual save back to the saveFile
             oos.flush();
         } catch (IOException ex) {
             throw new RuntimeFileProcessingException("IO exception for saveFile: " + saveFile.getAbsolutePath(), ex);
         }
     }
 
-
-    @Override
-    public void saveAll(Map<Integer, TradeSkillMasterItem> map) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public TradeSkillMasterItem read(Integer id) {
-        final Map<Integer, TradeSkillMasterItem> itemMap = readAll();
-        return itemMap.get(id);
-    }
-
     @Override
     @SuppressWarnings("unchecked")
     public Map<Integer, TradeSkillMasterItem> readAll () {
-        logger.debug("Reading all items from disk");
-//        final File file = new File(fileName);
         if (!saveFile.exists()) return Maps.newHashMap();
 
         try (final ObjectInputStream ois = new ObjectInputStream(new FileInputStream(saveFile))) {
