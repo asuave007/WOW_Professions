@@ -30,10 +30,15 @@ public class ItemUpdateServiceImpl implements ItemUpdateService {
     @Value("${all.items.url}")
     private String url;
 
-
     @Autowired
     public ItemUpdateServiceImpl(RestOperations restTemplate) {
         this.restTemplate = restTemplate;
+    }
+
+    private String addJsonApiKeyToUrl (final String url) {
+        final String jsonApi = System.getProperty("apiKey");
+        if (jsonApi == null) throw new IllegalArgumentException("Argument for json api key is required and was missing!");
+        return url + jsonApi;
     }
 
     @Override
@@ -42,8 +47,9 @@ public class ItemUpdateServiceImpl implements ItemUpdateService {
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         final HttpEntity headerEntity = new HttpEntity<>(httpHeaders);
 
-        final ResponseEntity<TradeSkillMasterItem[]>
-                responseEntity = restTemplate.exchange(url, HttpMethod.GET, headerEntity, TradeSkillMasterItem[].class);
+        final String urlWithApiKey = addJsonApiKeyToUrl(url);
+        final ResponseEntity<TradeSkillMasterItem[]> responseEntity =
+                restTemplate.exchange(urlWithApiKey, HttpMethod.GET, headerEntity, TradeSkillMasterItem[].class);
 
         if (responseEntity.getStatusCode() != HttpStatus.OK) {
             throw new RuntimeHttpException("Invalid HTTP response code: " + responseEntity.getStatusCode());
