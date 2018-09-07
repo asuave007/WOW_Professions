@@ -103,19 +103,19 @@ public class PricingServiceImpl implements PricingService {
 
         logger.info("Total Profit: {} Total Outlays: {}", formatter.format(totalProfit), formatter.format(totalCraftingCost));
 
-        final Map<TradeSkillMasterItem, Integer> tradeSkillMasterItemIntegerMap = calculateMats(profitableToCraftEnchants);
+        final Map<TradeSkillMasterItem, Double> tradeSkillMasterItemIntegerMap = calculateMats(profitableToCraftEnchants);
         tradeSkillMasterItemIntegerMap.forEach((item, count) -> logger.info("Total Mats: {}:{}", item.getName(), count));
 
     }
 
-    private Map<TradeSkillMasterItem, Integer> calculateMats(Set<Enchant> profitableToCraftEnchants) {
-        final Map<TradeSkillMasterItem, Integer> totalMats = new HashMap<>();
+    private Map<TradeSkillMasterItem, Double> calculateMats(Set<Enchant> profitableToCraftEnchants) {
+        final Map<TradeSkillMasterItem, Double> totalMats = new HashMap<>();
         for (final Enchant profitableToCraftEnchant : profitableToCraftEnchants) {
-            final Map<TradeSkillMasterItem, Integer> craftingMaterials = profitableToCraftEnchant.getCraftingMaterials();
-            for (Map.Entry<TradeSkillMasterItem, Integer> entry : craftingMaterials.entrySet()) {
+            final Map<TradeSkillMasterItem, Double> craftingMaterials = profitableToCraftEnchant.getCraftingMaterials();
+            for (Map.Entry<TradeSkillMasterItem, Double> entry : craftingMaterials.entrySet()) {
                 final TradeSkillMasterItem tempItem = new TradeSkillMasterItem(entry.getKey().getId());
-                final Integer integer = totalMats.get(tempItem);
-                if (integer == null) totalMats.put(entry.getKey(), entry.getValue());
+                final Double aDouble = totalMats.get(tempItem);
+                if (aDouble == null) totalMats.put(entry.getKey(), entry.getValue());
                 else totalMats.put(entry.getKey(), entry.getValue() + totalMats.get(tempItem));
             }
         }

@@ -1,23 +1,23 @@
 #quantiy on hand,id,name,crafting material id-crafting material quantity (n number of times)
 
 #potions
-0,152494,Coastal Healing Potion,152509-2
+0,152494,Coastal Healing Potion,152509-1.5
 0,152495,Coastal Mana Potion,152505-2
-0,152561,Potion of Replenishment,152509-10,152506-8
+0,152561,Potion of Replenishment,152509-6.67,152506-5.33
 0,163223,Battle Potion of Agility,152509-10,152505-8
 0,163222,Battle Potion of Intellect,152509-10,152505-8
-0,163224,Battle Potion of Strength,152511-10,152506-8
-0,163225,Battle Potion of Stamina,152511-10,152506-8
+0,163224,Battle Potion of Strength,152511-6.67,152506-5.33
+0,163225,Battle Potion of Stamina,152511-6.67,152506-5.33
 0,152559,Potion of Rising Death,152511-10,152506-8
 0,152560,Potion of Bursting Blood,152509-10,152505-8
-0,152557,Steelskin Potion,152511-10,152505-8
+0,152557,Steelskin Potion,152511-6.67,152505-5.33
 0,152497,Lightfoot Potion,152506-10
 0,152550,Sea Mist Potion,152511-10
 0,152503,Potion of Concealment,152509-10
 0,152496,Demitri's Draught of Deception,152543-5,152511-5
 
 #flasks
-0,152496,Flask of the Currents,152510-5,152507-10,152511-15
-0,152496,Flask of Endless Fathoms,152510-5,152508-10,152505-15
-0,152496,Flask of the Undertow,152510-5,152507-10,152509-15
-0,152496,Flask of the Vast Horizon,152510-5,152508-10,152506-15
+0,152638,Flask of the Currents,152510-3.33,152507-6.67,152511-5.33
+0,152639,Flask of Endless Fathoms,152510-3.33,152508-6.67,152505-5.33
+0,152641,Flask of the Undertow,152510-5,152507-10,152509-15
+0,152640,Flask of the Vast Horizon,152510-5,152508-10,152506-15

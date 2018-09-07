@@ -26,15 +26,17 @@ public class ProfitProcessorImpl implements ProfitProcessor {
     public long getCraftingCost(Enchant enchant) {
         logger.trace("Finding Crafting Cost for enchant: {}", enchant.getName());
 
-        long craftingCost = 0;
+        long totalCost = 0;
 
-        for (Map.Entry<TradeSkillMasterItem, Integer> entry : enchant.getCraftingMaterials().entrySet()) {
+        for (Map.Entry<TradeSkillMasterItem, Double> entry : enchant.getCraftingMaterials().entrySet()) {
             final long marketValue = entry.getKey().getRawMarketValue();
-            final Integer quantity = entry.getValue();
-            craftingCost += marketValue * quantity;
+            final Double quantity = entry.getValue();
+            final double itemCost = marketValue * quantity;
+            totalCost += itemCost;
+            logger.trace("item cost of {} is {}, and total cost is {}", entry.getKey().getId(),itemCost,totalCost);
         }
 
-        return craftingCost;
+        return totalCost;
     }
 
     @Override

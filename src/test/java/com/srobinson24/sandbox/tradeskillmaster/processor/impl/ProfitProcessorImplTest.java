@@ -27,9 +27,9 @@ public class ProfitProcessorImplTest {
         arkhana.setId(124440);
         arkhana.setRawMarketValue(355000);
 
-        markOfTheTrainedSoldier.addCraftingMaterial(chaosCrystal, 12);
-        markOfTheTrainedSoldier.addCraftingMaterial(leyLightShard, 10);
-        markOfTheTrainedSoldier.addCraftingMaterial(arkhana, 0);
+        markOfTheTrainedSoldier.addCraftingMaterial(chaosCrystal, 12d);
+        markOfTheTrainedSoldier.addCraftingMaterial(leyLightShard, 10d);
+        markOfTheTrainedSoldier.addCraftingMaterial(arkhana, 0d);
 
         final long actual = new ProfitProcessorImpl().getCraftingCost(markOfTheTrainedSoldier);
 
@@ -51,8 +51,8 @@ public class ProfitProcessorImplTest {
         leyLightShard.setId(124441);
         leyLightShard.setRawMarketValue(940000);
 
-        markOfTheTrainedSoldier.addCraftingMaterial(chaosCrystal, 12);
-        markOfTheTrainedSoldier.addCraftingMaterial(leyLightShard, 10);
+        markOfTheTrainedSoldier.addCraftingMaterial(chaosCrystal, 12d);
+        markOfTheTrainedSoldier.addCraftingMaterial(leyLightShard, 10d);
 
 
         final ProfitProcessorImpl profitProcessorImpl = new ProfitProcessorImpl();
@@ -94,12 +94,54 @@ public class ProfitProcessorImplTest {
         leyLightShard.setId(124441);
         leyLightShard.setRawMarketValue(996998);
 
-        markOfTheTrainedSoldier.addCraftingMaterial(chaosCrystal, 12);
-        markOfTheTrainedSoldier.addCraftingMaterial(leyLightShard, 10);
+        markOfTheTrainedSoldier.addCraftingMaterial(chaosCrystal, 12d);
+        markOfTheTrainedSoldier.addCraftingMaterial(leyLightShard, 10d);
 
         final long actual = new ProfitProcessorImpl().getCraftingCost(markOfTheTrainedSoldier);
 
         Assert.assertEquals(42759980, actual);
+
+    }
+
+    @Test
+    public void testGetCraftingCostOfDecimalValue() {
+        Enchant coastalHealingPotion = new Enchant();
+
+        final TradeSkillMasterItem pollen = new TradeSkillMasterItem();
+        pollen.setId(152509);
+        pollen.setRawMarketValue(37);
+
+        coastalHealingPotion.addCraftingMaterial(pollen, 1.5d);
+
+        final long actual = new ProfitProcessorImpl().getCraftingCost(coastalHealingPotion);
+
+        Assert.assertEquals(55, actual);
+
+    }
+
+    @Test
+    public void testFlaskCraftingCost() {
+        Enchant flask = new Enchant();
+
+        final TradeSkillMasterItem anchorWeed = new TradeSkillMasterItem();
+        anchorWeed.setId(0);
+        anchorWeed.setRawMarketValue(446);
+
+        final TradeSkillMasterItem bite = new TradeSkillMasterItem();
+        bite.setId(1);
+        bite.setRawMarketValue(35);
+
+        final TradeSkillMasterItem stalk = new TradeSkillMasterItem();
+        stalk.setId(2);
+        stalk.setRawMarketValue(45);
+
+        flask.addCraftingMaterial(anchorWeed, 3.75d);
+        flask.addCraftingMaterial(bite, 7.5d);
+        flask.addCraftingMaterial(stalk, 11.25d);
+
+        final long actual = new ProfitProcessorImpl().getCraftingCost(flask);
+
+        Assert.assertEquals(2440, actual);
 
     }
 

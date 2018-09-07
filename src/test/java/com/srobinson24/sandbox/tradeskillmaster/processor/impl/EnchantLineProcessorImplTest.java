@@ -14,6 +14,18 @@ import java.util.Map;
 public class EnchantLineProcessorImplTest {
 
     @Test
+    public void testProcessLineWithDecimal() throws Exception {
+        final String string = "0,152494,Coastal Healing Potion,152509-1.5";
+
+        EnchantLineProcessorImpl enchantLineProcessor = new EnchantLineProcessorImpl();
+        enchantLineProcessor.setCraftingMaterialMap(new HashMap<>());
+        final boolean continueProcessing = enchantLineProcessor.processLine(string);
+        Assert.assertTrue(continueProcessing);
+    }
+
+    @Test
+    @Deprecated
+    //deprecated due to legion level enchant and no longer being relavant
     public void testProcessLineHappyPath() throws Exception {
         final String string = "1,128548,Enchant Cloak - Binding of Strength*****,124442-8,124440-30";
 
@@ -41,7 +53,7 @@ public class EnchantLineProcessorImplTest {
         enchantLineProcessor.setCraftingMaterialMap(craftingMaterialMap);
         final boolean continueProcessing = enchantLineProcessor.processLine(string);
         Assert.assertTrue(continueProcessing);
-        final Map<TradeSkillMasterItem, Integer> craftingMaterials = enchantLineProcessor.getResult().iterator().next().getCraftingMaterials();
+        final Map<TradeSkillMasterItem, Double> craftingMaterials = enchantLineProcessor.getResult().iterator().next().getCraftingMaterials();
         Assert.assertTrue(craftingMaterials.containsValue(0));
     }
 

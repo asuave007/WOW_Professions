@@ -56,7 +56,7 @@ public class EnchantLineProcessorImpl implements EnchantLineProcessor <Set<Encha
             final Integer intCraftingMatId = Integer.valueOf(craftingMatId);
             final TradeSkillMasterItem craftingMaterial = craftingMaterialMap.get(intCraftingMatId);
 
-            final Integer quantity = Integer.valueOf(craftingMatQuantity);
+            final Double quantity = Double.valueOf(craftingMatQuantity);
             enchant.addCraftingMaterial(craftingMaterial, quantity);
 
         }
