@@ -145,4 +145,20 @@ public class ProfitProcessorImplTest {
 
     }
 
+    @Test
+    public void testProfit() {
+        Enchant enchant = new Enchant();
+        enchant.setRawMarketValue(20);
+
+
+        final TradeSkillMasterItem craftingMaterial = new TradeSkillMasterItem(0);
+        craftingMaterial.setRawMarketValue(17);
+        enchant.addCraftingMaterial(craftingMaterial,1.0);
+
+        ProfitProcessorImpl profitProcessor = new ProfitProcessorImpl();
+        final long actualProfit = profitProcessor.calculateProfit(enchant);
+        final long expectedProfit = 22-17;
+        Assert.assertEquals(actualProfit, expectedProfit);
+    }
+
 }

@@ -42,9 +42,15 @@ public class ProfitProcessorImpl implements ProfitProcessor {
     @Override
     public long calculateProfit(Enchant enchant) {
         final long craftingCost = getCraftingCost(enchant);
-        final long minimumBuyout = enchant.getRawMinBuyout();
-        final long auctionHouseCut = (long)(auctionHousePercent * minimumBuyout);
+        final long minimumBuyout = getLowestSalePrice(enchant);
+        final long auctionHouseCut = Math.round((auctionHousePercent * minimumBuyout));
         return minimumBuyout - auctionHouseCut - craftingCost;
+    }
+
+    @Override
+    public long getLowestSalePrice (Enchant enchant) {
+        if (enchant.getNumberOfAuctions() > 0) return enchant.getRawMinBuyout();
+        else return Math.round(enchant.getRawMarketValue()* 1.10);
     }
 
     @Override

@@ -67,7 +67,7 @@ public class PricingServiceImpl implements PricingService {
             totalProfit += profit;
             logger.info("Profit: [{}] Sales Price: [{}] Crafting Cost: [{}] Name: [{}] ",
                     String.format("%6s", (formatter.format(profit / 10000))),
-                    String.format("%6s", formatter.format(e.getRawMinBuyout() / 10000)),
+                    String.format("%6s", formatter.format(profitProcessor.getLowestSalePrice(e) / 10000)),
                     String.format("%6s", formatter.format(craftingCost / 10000)),
                     e.getName());
         }

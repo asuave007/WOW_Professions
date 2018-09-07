@@ -31,7 +31,7 @@ public class CraftingMaterialLineProcessorImpl implements LineProcessor<Map<Inte
         }
         final String[] strings = StringUtils.split(line, ",");
         Preconditions.checkArgument(strings != null, "Line parsed to null!");
-        Preconditions.checkArgument(3 == strings.length, "Invalid line:" + line);
+        Preconditions.checkArgument(2 == strings.length, "Invalid line:" + line);
 
         final TradeSkillMasterItem craftingMaterial = new TradeSkillMasterItem();
         craftingMaterial.setId(Integer.parseInt(strings[0]));

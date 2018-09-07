@@ -10,5 +10,7 @@ public interface ProfitProcessor {
 
     long calculateProfit(Enchant enchant);
 
+    long getLowestSalePrice(Enchant enchant);
+
     long truncateSilverAndCopper(long value);
 }

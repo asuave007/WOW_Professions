@@ -1,8 +1,16 @@
-152505,Riverbud,Enchant
-152506,Star Moss,Enchant
-152507,Akunda's Bite,Enchant
-152508,Winter's Kiss,Enchant
-152509,Siren's Pollen,Enchant
-152510,Anchor Weed,Enchant
-152511,Sea Stalk,Enchant
-152543,Sand Shifter,Enchant
+#Herbs
+152505,Riverbud
+152506,Star Moss
+152507,Akunda's Bite
+152508,Winter's Kiss
+152509,Siren's Pollen
+152510,Anchor Weed
+152511,Sea Stalk
+
+#Enchanting
+152875,Gloom Dust
+152876,Umbra Shard
+152877,Veiled Crystal
+
+#Fish
+152543,Sand Shifter
