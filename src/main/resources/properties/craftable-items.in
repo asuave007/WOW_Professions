@@ -3,14 +3,14 @@
 #potions
 0,60,152494,Coastal Healing Potion,152509-1.41
 0,60,152495,Coastal Mana Potion,152505-1.41
-0,60,152561,Potion of Replenishment,152509-7.14,152506-5.71
+0,20,152561,Potion of Replenishment,152509-7.14,152506-5.71
 0,60,163224,Battle Potion of Strength,152511-7.14,152506-5.71
 0,60,163225,Battle Potion of Stamina,152511-7.14,152506-5.71
 0,10,152557,Steelskin Potion,152511-7.14,152505-5.71
 0,60,163223,Battle Potion of Agility,152509-7.14,152505-5.71
 0,60,163222,Battle Potion of Intellect,152509-7.14,152505-5.71
-0,60,152560,Potion of Bursting Blood,152509-7.14,152505-5.71
-0,60,152559,Potion of Rising Death,152511-7.14,152506-5.71
+0,20,152560,Potion of Bursting Blood,152509-7.14,152505-5.71
+0,20,152559,Potion of Rising Death,152511-7.14,152506-5.71
 0,5,152497,Lightfoot Potion,152506-7.14
 0,5,152550,Sea Mist Potion,152511-7.14
 0,5,152503,Potion of Concealment,152509-10
@@ -23,16 +23,16 @@
 0,15,152640,Flask of the Vast Horizon,152510-3.52,152508-7.14,152506-10.71
 
 #Jewelcrafting
-0,3,153714,Insightful Rubellite,153701-1
-0,3,153715,Straddling Viridium,153704-1
-0,3,153710,Deadly Solstone,153703-1
-0,3,153711,Quick Golden Beryl,153700-1
-0,3,153713,Masterful Kubiline,153701-1
-0,3,153712,Versatile Kyanite,153705-1
-0,3,154126,Deadly Amberblaze,154123-1
-0,3,154127,Quick Owlseye,154120-1
-0,3,154128,Versatile Royal Quartz,154125-1
-0,3,154129,Masterful Tidal Amethyst,154122-1
+0,5,153714,Insightful Rubellite,153701-1
+0,5,153715,Straddling Viridium,153704-1
+0,5,153710,Deadly Solstone,153703-1
+0,5,153711,Quick Golden Beryl,153700-1
+0,5,153713,Masterful Kubiline,153701-1
+0,5,153712,Versatile Kyanite,153705-1
+0,5,154126,Deadly Amberblaze,154123-1
+0,5,154127,Quick Owlseye,154120-1
+0,5,154128,Versatile Royal Quartz,154125-1
+0,5,154129,Masterful Tidal Amethyst,154122-1
 
 #Inscription Inks and Pigments - these have special rules, pigments take that many herbs on average to generate one pigment
 #0,153635,Ultramarine Pigment,Inscription,Pigment,152505-1.21,152506-1.21,152507-1.21,152508-1.21,152509-1.21,152510-1.21,152511-1.21

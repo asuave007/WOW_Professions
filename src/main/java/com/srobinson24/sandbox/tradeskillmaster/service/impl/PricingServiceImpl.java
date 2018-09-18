@@ -64,7 +64,7 @@ public class PricingServiceImpl implements PricingService {
         for (CraftableItem e : profitableCraftableItems) {
             final double craftingCost = profitProcessor.getCraftingCost(e);
             final double profit = profitProcessor.calculateProfit(e);
-            totalProfit += profit;
+            totalProfit += profit * e.getQuantityDesired();
             logger.info("Profit: [{}] Sales Price: [{}] Crafting Cost: [{}] Name: [{}] ",
                     String.format("%6s", (formatter.format(profit / 10000))),
                     String.format("%6s", formatter.format(profitProcessor.getLowestSalePrice(e) / 10000)),
@@ -104,7 +104,7 @@ public class PricingServiceImpl implements PricingService {
         logger.info("Total Profit: {} Total Outlays: {}", formatter.format(totalProfit), formatter.format(totalCraftingCost));
 
         final Map<TradeSkillMasterItem, Double> tradeSkillMasterItemIntegerMap = calculateMats(profitableToCraftCraftableItems);
-        tradeSkillMasterItemIntegerMap.forEach((item, count) -> logger.info("Total Mats: {}:{}", item.getName(), count));
+        tradeSkillMasterItemIntegerMap.forEach((item, count) -> logger.info("Total Mats: {}:{}", item.getName(), (int) Math.ceil(count)));
 
     }
 
@@ -127,13 +127,14 @@ public class PricingServiceImpl implements PricingService {
     }
 
     private double calculateCraftingCost(Set<CraftableItem> profitableToCraftCraftableItems) {
-        return profitableToCraftCraftableItems.stream().mapToDouble(profitProcessor::getCraftingCost).sum();
+        return profitableToCraftCraftableItems.stream().mapToDouble(craftableItem -> profitProcessor.getCraftingCost(craftableItem) * craftableItem.getQuantityDesired()).sum();
     }
 
     private void printNames(Set<CraftableItem> onHandProfitableCraftableItems) {
-        for (CraftableItem onHandProfitableCraftableItem : onHandProfitableCraftableItems) {
-            logger.info("{}", onHandProfitableCraftableItem.getName());
-        }
+        onHandProfitableCraftableItems.forEach(item -> logger.info(" {} of {}, if alchemy, craft {}", item.getQuantityDesired(), item.getName(), item.getQuantityDesired() / 1.41));
+//        for (CraftableItem onHandProfitableCraftableItem : onHandProfitableCraftableItems) {
+//            logger.info("{}", onHandProfitableCraftableItem.getName());
+//        }
     }
 
 
