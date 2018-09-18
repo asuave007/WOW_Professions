@@ -19,6 +19,20 @@ import java.util.Set;
  */
 public class CraftableItemLineProcessorImplTest {
 
+
+    @Test
+    public void testProcessLineWithInscription() throws Exception {
+        final String string = "Inscription,0,15,158202,War-Scroll of Battle Shout,158188-8";
+
+        CraftableItemLineProcessorImpl lineProcessor = new CraftableItemLineProcessorImpl();
+        lineProcessor.setCraftingMaterialMap(new HashMap<>());
+        final boolean continueProcessing = lineProcessor.processLine(string);
+        Assert.assertTrue(continueProcessing);
+        final CraftableItem craftableItem = lineProcessor.getResult().stream().findFirst().get();
+        final CraftingType actual = craftableItem.getCraftingType();
+        Assert.assertEquals(CraftingType.INSCRIPTION, actual);
+    }
+
     @Test
     public void testProcessLineWithQuantity60() throws Exception {
         final String string = "0,60,152494,Coastal Healing Potion,152509-1.41";
@@ -99,7 +113,7 @@ public class CraftableItemLineProcessorImplTest {
 
     @Test
     public void testInk() throws Exception {
-        final String string = "0,15,158187,Ultramarine Ink,Inscription, Ink,153635-1";
+        final String string = "Ink,0,158188,Crimson Ink,153636-1";
 
         CraftableItemLineProcessorImpl lineProcessor = new CraftableItemLineProcessorImpl();
         lineProcessor.setCraftingMaterialMap(new HashMap<>());
@@ -110,7 +124,7 @@ public class CraftableItemLineProcessorImplTest {
 
     @Test
     public void testPigment() throws Exception {
-        final String string = "0,15,153635,Ultramarine Pigment,Inscription,Pigment,152505-1.21,152506-1.21,152507-1.21,152508-1.21,152509-1.21,152510-1.21,152511-1.21";
+        final String string = "Pigment,0,153635,Ultramarine Pigment,152505-1.21,152506-1.21,152507-1.21,152508-1.21,152509-1.21,152510-1.21,152511-1.21";
 
         CraftableItemLineProcessorImpl lineProcessor = new CraftableItemLineProcessorImpl();
         lineProcessor.setCraftingMaterialMap(new HashMap<>());

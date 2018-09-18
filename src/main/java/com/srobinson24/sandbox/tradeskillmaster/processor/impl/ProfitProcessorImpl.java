@@ -50,7 +50,6 @@ public class ProfitProcessorImpl implements ProfitProcessor {
 
     private double priceInkCraftCost(InscriptionInk ink) {
         logger.trace("Item is an ink: {}", ink);
-//        final InscriptionPigment pigment = ink.getCraftingMaterials().entrySet().stream().findFirst().orElseThrow(NoSuchElementException::new);
         final TradeSkillMasterItem pigment =
                 ink.getCraftingMaterials().entrySet().stream().findFirst().orElseThrow(NoSuchElementException::new).getKey();
         final double lowestPigmentCost = lowestPigmentCost((InscriptionPigment) pigment);

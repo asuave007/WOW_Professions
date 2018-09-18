@@ -5,5 +5,5 @@ package com.srobinson24.sandbox.tradeskillmaster.domain;
  */
 public enum CraftingType {
 
-    ENCHANT, ALCHEMY, INSCRIPTION_INK, INSCRIPTION_PIGMENT
+    ENCHANT, ALCHEMY, INSCRIPTION_INK, INSCRIPTION_PIGMENT, INSCRIPTION
 }
