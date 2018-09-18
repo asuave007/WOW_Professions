@@ -104,7 +104,16 @@ public class PricingServiceImpl implements PricingService {
         logger.info("Total Profit: {} Total Outlays: {}", formatter.format(totalProfit), formatter.format(totalCraftingCost));
 
         final Map<TradeSkillMasterItem, Double> tradeSkillMasterItemIntegerMap = calculateMats(profitableToCraftCraftableItems);
-        tradeSkillMasterItemIntegerMap.forEach((item, count) -> logger.info("Total Mats: {}:{}", item.getName(), (int) Math.ceil(count)));
+        tradeSkillMasterItemIntegerMap.forEach((item, count) -> {
+            final int quantityToPurchase = (int) Math.ceil(count);
+            final String marketAverage = item.getRawMarketValue() / 10000 + "g";
+            final boolean matsAvailableOnAuctionHouse = item.getNumberOfAuctions() > quantityToPurchase;
+            if (matsAvailableOnAuctionHouse)
+                logger.info("Total Mats: {}@{}:{}", item.getName(), marketAverage, quantityToPurchase);
+            else
+                logger.info("Total Mats: {}@{}:{} NOT ENOUGH AVAILABLE", item.getName(), marketAverage, quantityToPurchase);
+
+        });
 
     }
 
@@ -132,9 +141,6 @@ public class PricingServiceImpl implements PricingService {
 
     private void printNames(Set<CraftableItem> onHandProfitableCraftableItems) {
         onHandProfitableCraftableItems.forEach(item -> logger.info(" {} of {}, if alchemy, craft {}", item.getQuantityDesired(), item.getName(), item.getQuantityDesired() / 1.41));
-//        for (CraftableItem onHandProfitableCraftableItem : onHandProfitableCraftableItems) {
-//            logger.info("{}", onHandProfitableCraftableItem.getName());
-//        }
     }
 
 
