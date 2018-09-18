@@ -20,8 +20,21 @@ import java.util.Set;
 public class CraftableItemLineProcessorImplTest {
 
     @Test
+    public void testProcessLineWithQuantity60() throws Exception {
+        final String string = "0,60,152494,Coastal Healing Potion,152509-1.41";
+
+        CraftableItemLineProcessorImpl lineProcessor = new CraftableItemLineProcessorImpl();
+        lineProcessor.setCraftingMaterialMap(new HashMap<>());
+        final boolean continueProcessing = lineProcessor.processLine(string);
+        Assert.assertTrue(continueProcessing);
+        final CraftableItem craftableItem = lineProcessor.getResult().stream().findFirst().get();
+        final int actual = craftableItem.getQuantityDesired();
+        Assert.assertEquals(60, actual);
+    }
+
+    @Test
     public void testProcessLineWithDecimal() throws Exception {
-        final String string = "0,152494,Coastal Healing Potion,152509-1.5";
+        final String string = "0,60,152494,Coastal Healing Potion,152509-1.5";
 
         CraftableItemLineProcessorImpl enchantLineProcessor = new CraftableItemLineProcessorImpl();
         enchantLineProcessor.setCraftingMaterialMap(new HashMap<>());
@@ -31,7 +44,7 @@ public class CraftableItemLineProcessorImplTest {
 
     @Test
     public void testProcessLineHappyPath() throws Exception {
-        final String string = "0,152638,Flask of the Currents,152510-3.52,152511-7.04,152507-5.63";
+        final String string = "0,15,152638,Flask of the Currents,152510-3.52,152511-7.04,152507-5.63";
 
         CraftableItemLineProcessorImpl enchantLineProcessor = new CraftableItemLineProcessorImpl();
         enchantLineProcessor.setCraftingMaterialMap(new HashMap<>());
@@ -41,7 +54,7 @@ public class CraftableItemLineProcessorImplTest {
 
     @Test
     public void testProcessLineHappyPathWith0Materials() throws Exception {
-        final String string = "0,152638,Flask of the Currents,152510-3.52,152511-0,152507-5.63";
+        final String string = "0,15,152638,Flask of the Currents,152510-3.52,152511-0,152507-5.63";
 
         CraftableItemLineProcessorImpl enchantLineProcessor = new CraftableItemLineProcessorImpl();
         final HashMap<Integer, TradeSkillMasterItem> craftingMaterialMap = new HashMap<>();
@@ -86,7 +99,7 @@ public class CraftableItemLineProcessorImplTest {
 
     @Test
     public void testInk() throws Exception {
-        final String string = "0,158187,Ultramarine Ink,Inscription, Ink,153635-1";
+        final String string = "0,15,158187,Ultramarine Ink,Inscription, Ink,153635-1";
 
         CraftableItemLineProcessorImpl lineProcessor = new CraftableItemLineProcessorImpl();
         lineProcessor.setCraftingMaterialMap(new HashMap<>());
@@ -97,7 +110,7 @@ public class CraftableItemLineProcessorImplTest {
 
     @Test
     public void testPigment() throws Exception {
-        final String string = "0,153635,Ultramarine Pigment,Inscription,Pigment,152505-1.21,152506-1.21,152507-1.21,152508-1.21,152509-1.21,152510-1.21,152511-1.21";
+        final String string = "0,15,153635,Ultramarine Pigment,Inscription,Pigment,152505-1.21,152506-1.21,152507-1.21,152508-1.21,152509-1.21,152510-1.21,152511-1.21";
 
         CraftableItemLineProcessorImpl lineProcessor = new CraftableItemLineProcessorImpl();
         lineProcessor.setCraftingMaterialMap(new HashMap<>());

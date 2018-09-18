@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 
 @Component
+//todo: need to modify the actual line processing to depend on the item type as an argument - ex. pigments different from inks from alchemy
 public class CraftableItemLineProcessorImpl implements CraftableItemLineProcessor<Set<CraftableItem>> {
 
     private final Logger logger = LoggerFactory.getLogger(CraftableItemLineProcessorImpl.class);
@@ -39,7 +40,7 @@ public class CraftableItemLineProcessorImpl implements CraftableItemLineProcesso
     }
 
     private void parseItem(String[] strings) {
-        if (!"Inscription".equalsIgnoreCase(strings[3])) {
+        if (!"Inscription".equalsIgnoreCase(strings[4])) {
             final CraftableItem craftableItem = parseMaterials(strings);
             set.add(craftableItem);
         }
@@ -53,8 +54,8 @@ public class CraftableItemLineProcessorImpl implements CraftableItemLineProcesso
 
         CraftableItem craftableItem;
 
-        if (strings[4].trim().equalsIgnoreCase("Pigment")) craftableItem =  parsePigment(strings);
-        else if (strings[4].trim().equalsIgnoreCase("Ink")) craftableItem = parseInk(strings);
+        if (strings[5].trim().equalsIgnoreCase("Pigment")) craftableItem =  parsePigment(strings);
+        else if (strings[5].trim().equalsIgnoreCase("Ink")) craftableItem = parseInk(strings);
         else throw new IllegalArgumentException("Invalid Argument.  Must be Pigment or Ink but was: " + strings[4]);
 
         return craftableItem;
@@ -65,10 +66,11 @@ public class CraftableItemLineProcessorImpl implements CraftableItemLineProcesso
         InscriptionInk ink = new InscriptionInk();
 
         ink.setQuantityOnhand(Integer.parseInt(strings[0].trim()));
-        ink.setId(Integer.parseInt(strings[1].trim()));
-        ink.setName(strings[2].trim());
+        ink.setQuantityDesired(Integer.parseInt(strings[1].trim()));
+        ink.setId(Integer.parseInt(strings[2].trim()));
+        ink.setName(strings[3].trim());
 
-        final String[] mats = strings[5].trim().split("-");
+        final String[] mats = strings[6].trim().split("-");
 
         final Integer pigmentId = Integer.valueOf(mats[0]);
         final double quantity = Double.parseDouble(mats[1]);
@@ -85,9 +87,10 @@ public class CraftableItemLineProcessorImpl implements CraftableItemLineProcesso
     private CraftableItem parsePigment(String[] strings) {
         InscriptionPigment pigment = new InscriptionPigment();
         pigment.setQuantityOnhand(Integer.parseInt(strings[0].trim()));
-        pigment.setId(Integer.parseInt(strings[1].trim()));
-        pigment.setName(strings[2].trim());
-        for (int ii = 5; ii < strings.length; ii++) {
+        pigment.setQuantityDesired(Integer.parseInt(strings[1].trim()));
+        pigment.setId(Integer.parseInt(strings[2].trim()));
+        pigment.setName(strings[3].trim());
+        for (int ii = 6; ii < strings.length; ii++) {
 
             final String string = strings[ii];
             final String[] matsRate = string.trim().split("-");
@@ -109,9 +112,10 @@ public class CraftableItemLineProcessorImpl implements CraftableItemLineProcesso
     private CraftableItem parseMaterials(String[] strings) {
         final CraftableItem craftableItem = new CraftableItem();
         craftableItem.setQuantityOnhand(Integer.parseInt(strings[0].trim()));
-        craftableItem.setId(Integer.parseInt(strings[1].trim()));
-        craftableItem.setName(strings[2].trim());
-        for (int ii = 3; ii < strings.length; ii++) {
+        craftableItem.setQuantityDesired(Integer.parseInt(strings[1].trim()));
+        craftableItem.setId(Integer.parseInt(strings[2].trim()));
+        craftableItem.setName(strings[3].trim());
+        for (int ii = 4; ii < strings.length; ii++) {
 
             final String craftingMatString = strings[ii];
             final String[] craftingMats = craftingMatString.trim().split("-");

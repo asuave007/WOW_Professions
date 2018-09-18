@@ -16,6 +16,7 @@ public class CraftableItem extends TradeSkillMasterItem {
     }
 
     private int quantityOnhand;
+    private int quantityDesired;
     private final Map<TradeSkillMasterItem, Double> craftingMaterials =  new HashMap<>(); // item to quantity
 
     public int getQuantityOnhand() {
@@ -24,6 +25,14 @@ public class CraftableItem extends TradeSkillMasterItem {
 
     public void setQuantityOnhand(int quantityOnhand) {
         this.quantityOnhand = quantityOnhand;
+    }
+
+    public int getQuantityDesired() {
+        return quantityDesired;
+    }
+
+    public void setQuantityDesired(int quantityDesired) {
+        this.quantityDesired = quantityDesired;
     }
 
     public void addCraftingMaterial (TradeSkillMasterItem craftingMaterial, Double quantity) {

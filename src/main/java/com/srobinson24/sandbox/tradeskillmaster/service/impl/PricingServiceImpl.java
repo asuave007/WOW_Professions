@@ -77,7 +77,7 @@ public class PricingServiceImpl implements PricingService {
                 .filter(e -> profitProcessor.calculateProfit(e) >= profitThreshold)
                 .collect(Collectors.toSet());
 
-        Set <CraftableItem> profitableToCraftCraftableItems = profitableCraftableItems.parallelStream()
+        Set<CraftableItem> profitableToCraftCraftableItems = profitableCraftableItems.parallelStream()
                 .filter(e -> e.getQuantityOnhand() == 0)
                 .filter(e -> profitProcessor.calculateProfit(e) >= profitThreshold)
                 .collect(Collectors.toSet());
@@ -89,13 +89,13 @@ public class PricingServiceImpl implements PricingService {
                 .collect(Collectors.toSet());
 
         logger.info("ON HAND, NO CRAFT: {}", onHandProfitableCraftableItems.size());
-        printNames (onHandProfitableCraftableItems);
+        printNames(onHandProfitableCraftableItems);
         logger.info("CRAFTED: {}", profitableToCraftCraftableItems.size());
-        printNames (profitableToCraftCraftableItems);
+        printNames(profitableToCraftCraftableItems);
         logger.info("NOT PROFITABLE: {}", notProfitableEnchantsOnHand.size());
-        printNames (notProfitableEnchantsOnHand);
+        printNames(notProfitableEnchantsOnHand);
 
-        double totalCraftingCost = calculateCraftingCost (profitableToCraftCraftableItems);
+        double totalCraftingCost = calculateCraftingCost(profitableToCraftCraftableItems);
 
         totalProfit = totalProfit / 10000;
         totalCraftingCost = totalCraftingCost / 10000;
@@ -109,16 +109,17 @@ public class PricingServiceImpl implements PricingService {
     }
 
     //fixme: this should be placed elsewhere
-    private Map<TradeSkillMasterItem, Double> calculateMats(Set<CraftableItem> profitableToCraftCraftableItems) {
+    @Override
+    public Map<TradeSkillMasterItem, Double> calculateMats(Set<CraftableItem> profitableItems) {
         final Map<TradeSkillMasterItem, Double> totalMats = new HashMap<>();
-        for (final CraftableItem profitableToCraftCraftableItem : profitableToCraftCraftableItems) {
-            final Map<TradeSkillMasterItem, Double> craftingMaterials = profitableToCraftCraftableItem.getCraftingMaterials();
-            for (Map.Entry<TradeSkillMasterItem, Double> entry : craftingMaterials.entrySet()) {
-                final TradeSkillMasterItem tempItem = new TradeSkillMasterItem(entry.getKey().getId());
-                final Double aDouble = totalMats.get(tempItem);
-                int quantity = profitableToCraftCraftableItem.getName().contains("Flask") ? 11 : 60;
-                if (aDouble == null) totalMats.put(entry.getKey(), entry.getValue() * quantity);
-                else totalMats.put(entry.getKey(), entry.getValue() + (totalMats.get(tempItem) * quantity));
+        for (final CraftableItem profitableItem : profitableItems) {
+            for (Map.Entry<TradeSkillMasterItem, Double> craftingMaterial : profitableItem.getCraftingMaterials().entrySet()) {
+                final TradeSkillMasterItem item = craftingMaterial.getKey();
+                final Double runningTotalOfMats = totalMats.get(item);
+                int totalToCraft = profitableItem.getQuantityDesired();
+                final Double neededForOne = craftingMaterial.getValue();
+                if (runningTotalOfMats == null) totalMats.put(item, neededForOne * totalToCraft);
+                else totalMats.put(item, neededForOne * totalToCraft + runningTotalOfMats);
             }
         }
 

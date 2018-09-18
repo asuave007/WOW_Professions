@@ -28,6 +28,10 @@ public class TradeSkillMasterItem implements Serializable {
     private long rawMarketValue;
     private CraftingType craftingType = CraftingType.ENCHANT;
 
+    public TradeSkillMasterItem(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
     public TradeSkillMasterItem(int id) {
         this.id = id;
