@@ -63,7 +63,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Map<Integer, TradeSkillMasterItem> readCraftingItemsFromFile() {
+    public Map<Integer, TradeSkillMasterItem> readCraftingMaterialsFromFile() {
         final File craftingMaterialsFile = new File(craftingMaterialsFilePath);
         logger.debug("file location: {}", craftingMaterialsFile.getAbsolutePath());
         try {
@@ -74,13 +74,13 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Set<CraftableItem> readEnchantsFromFile(final Map<Integer, TradeSkillMasterItem> craftingMaterialsKeyedOnId) {
-        final File enchantsFile = new File(craftableItemsFilePath);
-        logger.debug("file location: {}", enchantsFile.getAbsolutePath());
+    public Set<CraftableItem> readCraftsFromFile(final Map<Integer, TradeSkillMasterItem> craftingMaterialsKeyedOnId) {
+        final File file = new File(craftableItemsFilePath);
+        logger.debug("file location: {}", file.getAbsolutePath());
         craftableItemLineProcessor.setCraftingMaterialMap(craftingMaterialsKeyedOnId);
         final Set<CraftableItem> craftableItems;
         try {
-            craftableItems = Files.readLines(enchantsFile, Charsets.UTF_8, craftableItemLineProcessor);
+            craftableItems = Files.readLines(file, Charsets.UTF_8, craftableItemLineProcessor);
         } catch (IOException ex) {
             throw new RuntimeFileProcessingException(ex);
         }

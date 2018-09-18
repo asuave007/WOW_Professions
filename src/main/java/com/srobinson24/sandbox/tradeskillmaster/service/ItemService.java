@@ -11,9 +11,9 @@ import java.util.Set;
  */
 public interface ItemService {
 
-    Map<Integer, TradeSkillMasterItem> readCraftingItemsFromFile();
+    Map<Integer, TradeSkillMasterItem> readCraftingMaterialsFromFile();
 
-    Set<CraftableItem> readEnchantsFromFile(Map<Integer, TradeSkillMasterItem> craftingMaterialsKeyedOnId);
+    Set<CraftableItem> readCraftsFromFile(Map<Integer, TradeSkillMasterItem> craftingMaterialsKeyedOnId);
 
     void updateItemInformation(Set<TradeSkillMasterItem> enchants);
 

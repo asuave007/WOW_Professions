@@ -36,9 +36,9 @@ public class CraftableItemLineProcessorImplTest {
     public void testProcessLineWithDecimal() throws Exception {
         final String string = "0,60,152494,Coastal Healing Potion,152509-1.5";
 
-        CraftableItemLineProcessorImpl enchantLineProcessor = new CraftableItemLineProcessorImpl();
-        enchantLineProcessor.setCraftingMaterialMap(new HashMap<>());
-        final boolean continueProcessing = enchantLineProcessor.processLine(string);
+        CraftableItemLineProcessorImpl lineProcessor = new CraftableItemLineProcessorImpl();
+        lineProcessor.setCraftingMaterialMap(new HashMap<>());
+        final boolean continueProcessing = lineProcessor.processLine(string);
         Assert.assertTrue(continueProcessing);
     }
 
@@ -46,9 +46,9 @@ public class CraftableItemLineProcessorImplTest {
     public void testProcessLineHappyPath() throws Exception {
         final String string = "0,15,152638,Flask of the Currents,152510-3.52,152511-7.04,152507-5.63";
 
-        CraftableItemLineProcessorImpl enchantLineProcessor = new CraftableItemLineProcessorImpl();
-        enchantLineProcessor.setCraftingMaterialMap(new HashMap<>());
-        final boolean continueProcessing = enchantLineProcessor.processLine(string);
+        CraftableItemLineProcessorImpl lineProcessor = new CraftableItemLineProcessorImpl();
+        lineProcessor.setCraftingMaterialMap(new HashMap<>());
+        final boolean continueProcessing = lineProcessor.processLine(string);
         Assert.assertTrue(continueProcessing);
     }
 
@@ -56,7 +56,7 @@ public class CraftableItemLineProcessorImplTest {
     public void testProcessLineHappyPathWith0Materials() throws Exception {
         final String string = "0,15,152638,Flask of the Currents,152510-3.52,152511-0,152507-5.63";
 
-        CraftableItemLineProcessorImpl enchantLineProcessor = new CraftableItemLineProcessorImpl();
+        CraftableItemLineProcessorImpl lineProcessor = new CraftableItemLineProcessorImpl();
         final HashMap<Integer, TradeSkillMasterItem> craftingMaterialMap = new HashMap<>();
         final TradeSkillMasterItem craftingMat1 = new TradeSkillMasterItem();
         craftingMat1.setId(152510);
@@ -67,10 +67,10 @@ public class CraftableItemLineProcessorImplTest {
         craftingMaterialMap.put(craftingMat1.getId(), craftingMat1);
         craftingMaterialMap.put(craftingMat2.getId(), craftingMat2);
         craftingMaterialMap.put(craftingMat3.getId(), craftingMat3);
-        enchantLineProcessor.setCraftingMaterialMap(craftingMaterialMap);
-        final boolean continueProcessing = enchantLineProcessor.processLine(string);
+        lineProcessor.setCraftingMaterialMap(craftingMaterialMap);
+        final boolean continueProcessing = lineProcessor.processLine(string);
         Assert.assertTrue(continueProcessing);
-        final CraftableItem firstCraftableItem = enchantLineProcessor.getResult().iterator().next();
+        final CraftableItem firstCraftableItem = lineProcessor.getResult().iterator().next();
         final Map<TradeSkillMasterItem, Double> craftingMaterials = firstCraftableItem.getCraftingMaterials();
         Assert.assertTrue(craftingMaterials.containsValue(0.0));
     }
@@ -79,9 +79,9 @@ public class CraftableItemLineProcessorImplTest {
     public void testCommentLine() throws Exception {
         final String string = "#neck enchants";
 
-        CraftableItemLineProcessorImpl enchantLineProcessor = new CraftableItemLineProcessorImpl();
-        enchantLineProcessor.setCraftingMaterialMap(new HashMap<>());
-        final boolean continueProcessing = enchantLineProcessor.processLine(string);
+        CraftableItemLineProcessorImpl lineProcessor = new CraftableItemLineProcessorImpl();
+        lineProcessor.setCraftingMaterialMap(new HashMap<>());
+        final boolean continueProcessing = lineProcessor.processLine(string);
         Assert.assertTrue(continueProcessing);
     }
 
@@ -89,9 +89,9 @@ public class CraftableItemLineProcessorImplTest {
     public void testEmptyLine() throws Exception {
         final String string = "";
 
-        CraftableItemLineProcessorImpl enchantLineProcessor = new CraftableItemLineProcessorImpl();
-        enchantLineProcessor.setCraftingMaterialMap(new HashMap<>());
-        final boolean continueProcessing = enchantLineProcessor.processLine(string);
+        CraftableItemLineProcessorImpl lineProcessor = new CraftableItemLineProcessorImpl();
+        lineProcessor.setCraftingMaterialMap(new HashMap<>());
+        final boolean continueProcessing = lineProcessor.processLine(string);
         Assert.assertTrue(continueProcessing);
     }
 

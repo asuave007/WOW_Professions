@@ -12,7 +12,7 @@ import java.util.SortedSet;
  */
 public interface PricingService {
 
-    void getPricedEnchants();
+    void getPricedCrafts();
 
     //fixme: this should be placed elsewhere
     Map<TradeSkillMasterItem, Double> calculateMats(Set<CraftableItem> profitableToCraftCraftableItems);

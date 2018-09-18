@@ -38,10 +38,10 @@ public class PricingServiceImpl implements PricingService {
     }
 
 
-    public void getPricedEnchants() {
+    public void getPricedCrafts() {
 
-        final Map<Integer, TradeSkillMasterItem> craftingItemsMap = itemService.readCraftingItemsFromFile();
-        final Set<CraftableItem> craftableItems = itemService.readEnchantsFromFile(craftingItemsMap);
+        final Map<Integer, TradeSkillMasterItem> craftingItemsMap = itemService.readCraftingMaterialsFromFile();
+        final Set<CraftableItem> craftableItems = itemService.readCraftsFromFile(craftingItemsMap);
 
         final Set<TradeSkillMasterItem> allItems = Stream.concat(craftableItems.stream(), craftingItemsMap.values().stream()).collect(Collectors.toSet());
         logger.debug("Items to update: {}", allItems);
@@ -82,7 +82,7 @@ public class PricingServiceImpl implements PricingService {
                 .filter(e -> profitProcessor.calculateProfit(e) >= profitThreshold)
                 .collect(Collectors.toSet());
 
-        final Set<CraftableItem> notProfitableEnchantsOnHand = allCraftableItems.parallelStream()
+        final Set<CraftableItem> notProfitableCraftsOnHand = allCraftableItems.parallelStream()
                 .filter(e -> !onHandProfitableCraftableItems.contains(e))
                 .filter(e -> !profitableToCraftCraftableItems.contains(e))
                 .filter(e -> e.getQuantityOnhand() > 0)
@@ -92,8 +92,8 @@ public class PricingServiceImpl implements PricingService {
         printNames(onHandProfitableCraftableItems);
         logger.info("CRAFTED: {}", profitableToCraftCraftableItems.size());
         printNames(profitableToCraftCraftableItems);
-        logger.info("NOT PROFITABLE: {}", notProfitableEnchantsOnHand.size());
-        printNames(notProfitableEnchantsOnHand);
+        logger.info("NOT PROFITABLE: {}", notProfitableCraftsOnHand.size());
+        printNames(notProfitableCraftsOnHand);
 
         double totalCraftingCost = calculateCraftingCost(profitableToCraftCraftableItems);
 
@@ -151,7 +151,7 @@ public class PricingServiceImpl implements PricingService {
         } else {
             final Set<CraftableItem> profitableCraftableItems = craftableItems
                     .stream()
-                    .filter(enchant -> profitProcessor.calculateProfit(enchant) > profitThreshold)
+                    .filter(craft -> profitProcessor.calculateProfit(craft) > profitThreshold)
                     .collect(Collectors.toSet());
 
             sortedSet.addAll(profitableCraftableItems);

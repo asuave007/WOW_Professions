@@ -8,7 +8,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.IOException;
-import java.util.Properties;
 
 /**
  * Created by srobinso on 3/24/2017.
@@ -27,7 +26,7 @@ public class Main {
 
         ApplicationContext context = new ClassPathXmlApplicationContext("spring/applicationContext.xml");
         PricingService pricingService = (PricingService) context.getBean("pricingServiceImpl");
-        pricingService.getPricedEnchants();
+        pricingService.getPricedCrafts();
         
     }
 }

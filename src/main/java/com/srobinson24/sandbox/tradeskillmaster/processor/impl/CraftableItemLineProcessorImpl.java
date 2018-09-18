@@ -23,7 +23,7 @@ public class CraftableItemLineProcessorImpl implements CraftableItemLineProcesso
 
     @Override
     public boolean processLine(String line) throws IOException {
-        Preconditions.checkArgument(craftingMaterialMap != null, "Crafting materials have not been set, cannot load enchants from file!");
+        Preconditions.checkArgument(craftingMaterialMap != null, "Crafting materials have not been set, cannot load crafts from file!");
         Preconditions.checkNotNull(line);
         logger.debug("Processing line: {}", line);
         if (line.startsWith("#") || line.isEmpty()) {

@@ -19,7 +19,7 @@ public PricingPrinter(PricingService pricingService) {
 
 
     public void printPricesToCommandLine() throws IOException {
-        pricingService.getPricedEnchants();
+        pricingService.getPricedCrafts();
     }
 
 }
