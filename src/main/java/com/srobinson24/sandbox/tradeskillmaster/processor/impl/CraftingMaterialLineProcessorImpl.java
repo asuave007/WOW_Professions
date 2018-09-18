@@ -8,22 +8,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created by srobinso on 3/24/2017.
  */
-//todo: I'm not even using this!?!?
 @Component
-public class CraftingMaterialLineProcessorImpl implements LineProcessor<Map<Integer,TradeSkillMasterItem>> {
+public class CraftingMaterialLineProcessorImpl implements LineProcessor<Map<Integer, TradeSkillMasterItem>> {
 
     private final Logger logger = LoggerFactory.getLogger(CraftingMaterialLineProcessorImpl.class);
 
-    private final Map <Integer,TradeSkillMasterItem> map = new HashMap<>();
+    private final Map<Integer, TradeSkillMasterItem> map = new HashMap<>();
 
-    public boolean processLine(String line) throws IOException {
+    public boolean processLine(String line) {
         Preconditions.checkNotNull(line);
         if (line.startsWith("#") || line.isEmpty()) {
             logger.debug("line was empty or comment: [{}]", line);

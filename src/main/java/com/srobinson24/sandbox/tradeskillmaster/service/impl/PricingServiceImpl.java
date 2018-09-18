@@ -1,7 +1,7 @@
 package com.srobinson24.sandbox.tradeskillmaster.service.impl;
 
 import com.google.common.base.Preconditions;
-import com.srobinson24.sandbox.tradeskillmaster.domain.Enchant;
+import com.srobinson24.sandbox.tradeskillmaster.domain.CraftableItem;
 import com.srobinson24.sandbox.tradeskillmaster.domain.TradeSkillMasterItem;
 import com.srobinson24.sandbox.tradeskillmaster.processor.ProfitProcessor;
 import com.srobinson24.sandbox.tradeskillmaster.service.ItemService;
@@ -41,18 +41,18 @@ public class PricingServiceImpl implements PricingService {
     public void getPricedEnchants() {
 
         final Map<Integer, TradeSkillMasterItem> craftingItemsMap = itemService.readCraftingItemsFromFile();
-        final Set<Enchant> enchants = itemService.readEnchantsFromFile(craftingItemsMap);
+        final Set<CraftableItem> craftableItems = itemService.readEnchantsFromFile(craftingItemsMap);
 
-        final Set<TradeSkillMasterItem> allItems = Stream.concat(enchants.stream(), craftingItemsMap.values().stream()).collect(Collectors.toSet());
+        final Set<TradeSkillMasterItem> allItems = Stream.concat(craftableItems.stream(), craftingItemsMap.values().stream()).collect(Collectors.toSet());
         logger.debug("Items to update: {}", allItems);
         itemService.updateItemInformation(allItems);
 
-        final Set<Enchant> profitableEnchants = sortByProfit(enchants);
-        displayOutput(profitableEnchants, craftingItemsMap, enchants);
+        final Set<CraftableItem> profitableCraftableItems = sortByProfit(craftableItems);
+        displayOutput(profitableCraftableItems, craftingItemsMap, craftableItems);
 
     }
 
-    private void displayOutput(Set<Enchant> profitableEnchants, Map<Integer, TradeSkillMasterItem> craftingItems, Set<Enchant> allEnchants) {
+    private void displayOutput(Set<CraftableItem> profitableCraftableItems, Map<Integer, TradeSkillMasterItem> craftingItems, Set<CraftableItem> allCraftableItems) {
         logger.info("*******************");
         logger.info("**FINAL SOLUTIONS**");
         if (printAll) logger.info("Printing Everything");
@@ -61,9 +61,9 @@ public class PricingServiceImpl implements PricingService {
 
         final DecimalFormat formatter = new DecimalFormat("###,###");
         //todo: delete this loop
-        for (Enchant e : profitableEnchants) {
-            final long craftingCost = profitProcessor.getCraftingCost(e);
-            final long profit = profitProcessor.calculateProfit(e);
+        for (CraftableItem e : profitableCraftableItems) {
+            final double craftingCost = profitProcessor.getCraftingCost(e);
+            final double profit = profitProcessor.calculateProfit(e);
             totalProfit += profit;
             logger.info("Profit: [{}] Sales Price: [{}] Crafting Cost: [{}] Name: [{}] ",
                     String.format("%6s", (formatter.format(profit / 10000))),
@@ -72,30 +72,30 @@ public class PricingServiceImpl implements PricingService {
                     e.getName());
         }
 
-        Set<Enchant> onHandProfitableEnchants = profitableEnchants.parallelStream()
+        Set<CraftableItem> onHandProfitableCraftableItems = profitableCraftableItems.parallelStream()
                 .filter(e -> e.getQuantityOnhand() > 0)
                 .filter(e -> profitProcessor.calculateProfit(e) >= profitThreshold)
                 .collect(Collectors.toSet());
 
-        Set <Enchant> profitableToCraftEnchants = profitableEnchants.parallelStream()
+        Set <CraftableItem> profitableToCraftCraftableItems = profitableCraftableItems.parallelStream()
                 .filter(e -> e.getQuantityOnhand() == 0)
                 .filter(e -> profitProcessor.calculateProfit(e) >= profitThreshold)
                 .collect(Collectors.toSet());
 
-        final Set<Enchant> notProfitableEnchantsOnHand = allEnchants.parallelStream()
-                .filter(e -> !onHandProfitableEnchants.contains(e))
-                .filter(e -> !profitableToCraftEnchants.contains(e))
+        final Set<CraftableItem> notProfitableEnchantsOnHand = allCraftableItems.parallelStream()
+                .filter(e -> !onHandProfitableCraftableItems.contains(e))
+                .filter(e -> !profitableToCraftCraftableItems.contains(e))
                 .filter(e -> e.getQuantityOnhand() > 0)
                 .collect(Collectors.toSet());
 
-        logger.info("ON HAND, NO CRAFT: {}", onHandProfitableEnchants.size());
-        printNames (onHandProfitableEnchants);
-        logger.info("CRAFTED: {}", profitableToCraftEnchants.size());
-        printNames (profitableToCraftEnchants);
+        logger.info("ON HAND, NO CRAFT: {}", onHandProfitableCraftableItems.size());
+        printNames (onHandProfitableCraftableItems);
+        logger.info("CRAFTED: {}", profitableToCraftCraftableItems.size());
+        printNames (profitableToCraftCraftableItems);
         logger.info("NOT PROFITABLE: {}", notProfitableEnchantsOnHand.size());
         printNames (notProfitableEnchantsOnHand);
 
-        long totalCraftingCost = calculateCraftingCost (profitableToCraftEnchants);
+        double totalCraftingCost = calculateCraftingCost (profitableToCraftCraftableItems);
 
         totalProfit = totalProfit / 10000;
         totalCraftingCost = totalCraftingCost / 10000;
@@ -103,55 +103,57 @@ public class PricingServiceImpl implements PricingService {
 
         logger.info("Total Profit: {} Total Outlays: {}", formatter.format(totalProfit), formatter.format(totalCraftingCost));
 
-        final Map<TradeSkillMasterItem, Double> tradeSkillMasterItemIntegerMap = calculateMats(profitableToCraftEnchants);
+        final Map<TradeSkillMasterItem, Double> tradeSkillMasterItemIntegerMap = calculateMats(profitableToCraftCraftableItems);
         tradeSkillMasterItemIntegerMap.forEach((item, count) -> logger.info("Total Mats: {}:{}", item.getName(), count));
 
     }
 
-    private Map<TradeSkillMasterItem, Double> calculateMats(Set<Enchant> profitableToCraftEnchants) {
+    //fixme: this should be placed elsewhere
+    private Map<TradeSkillMasterItem, Double> calculateMats(Set<CraftableItem> profitableToCraftCraftableItems) {
         final Map<TradeSkillMasterItem, Double> totalMats = new HashMap<>();
-        for (final Enchant profitableToCraftEnchant : profitableToCraftEnchants) {
-            final Map<TradeSkillMasterItem, Double> craftingMaterials = profitableToCraftEnchant.getCraftingMaterials();
+        for (final CraftableItem profitableToCraftCraftableItem : profitableToCraftCraftableItems) {
+            final Map<TradeSkillMasterItem, Double> craftingMaterials = profitableToCraftCraftableItem.getCraftingMaterials();
             for (Map.Entry<TradeSkillMasterItem, Double> entry : craftingMaterials.entrySet()) {
                 final TradeSkillMasterItem tempItem = new TradeSkillMasterItem(entry.getKey().getId());
                 final Double aDouble = totalMats.get(tempItem);
-                if (aDouble == null) totalMats.put(entry.getKey(), entry.getValue());
-                else totalMats.put(entry.getKey(), entry.getValue() + totalMats.get(tempItem));
+                int quantity = profitableToCraftCraftableItem.getName().contains("Flask") ? 11 : 60;
+                if (aDouble == null) totalMats.put(entry.getKey(), entry.getValue() * quantity);
+                else totalMats.put(entry.getKey(), entry.getValue() + (totalMats.get(tempItem) * quantity));
             }
         }
 
         return totalMats;
     }
 
-    private long calculateCraftingCost(Set<Enchant> profitableToCraftEnchants) {
-        return profitableToCraftEnchants.stream().mapToLong(profitProcessor::getCraftingCost).sum();
+    private double calculateCraftingCost(Set<CraftableItem> profitableToCraftCraftableItems) {
+        return profitableToCraftCraftableItems.stream().mapToDouble(profitProcessor::getCraftingCost).sum();
     }
 
-    private void printNames(Set<Enchant> onHandProfitableEnchants) {
-        for (Enchant onHandProfitableEnchant : onHandProfitableEnchants) {
-            logger.info("{}", onHandProfitableEnchant.getName());
+    private void printNames(Set<CraftableItem> onHandProfitableCraftableItems) {
+        for (CraftableItem onHandProfitableCraftableItem : onHandProfitableCraftableItems) {
+            logger.info("{}", onHandProfitableCraftableItem.getName());
         }
     }
 
 
     @Override
-    public SortedSet<Enchant> sortByProfit(Set<Enchant> enchants) {
-        logger.debug("sorting enchants by profit: {}", enchants);
-        final TreeSet<Enchant> sortedSet = new TreeSet<>((o1, o2) -> {
+    public SortedSet<CraftableItem> sortByProfit(Set<CraftableItem> craftableItems) {
+        logger.debug("sorting craftableItems by profit: {}", craftableItems);
+        final TreeSet<CraftableItem> sortedSet = new TreeSet<>((o1, o2) -> {
             Preconditions.checkNotNull(o1);
             Preconditions.checkNotNull(o2);
-            return Long.compare(profitProcessor.calculateProfit(o2), profitProcessor.calculateProfit(o1));
+            return Double.compare(profitProcessor.calculateProfit(o2), profitProcessor.calculateProfit(o1));
         });
 
         if (printAll) {
-            sortedSet.addAll(enchants);
+            sortedSet.addAll(craftableItems);
         } else {
-            final Set<Enchant> profitableEnchants = enchants
+            final Set<CraftableItem> profitableCraftableItems = craftableItems
                     .stream()
                     .filter(enchant -> profitProcessor.calculateProfit(enchant) > profitThreshold)
                     .collect(Collectors.toSet());
 
-            sortedSet.addAll(profitableEnchants);
+            sortedSet.addAll(profitableCraftableItems);
         }
 
         return sortedSet;

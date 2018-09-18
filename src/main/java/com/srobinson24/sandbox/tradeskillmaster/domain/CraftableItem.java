@@ -6,11 +6,17 @@ import java.util.Map;
 /**
  * Created by srobinso on 3/24/2017.
  */
-public class Enchant extends TradeSkillMasterItem {
+public class CraftableItem extends TradeSkillMasterItem {
+
+    public CraftableItem(String name) {
+        super(name);
+    }
+
+    public CraftableItem() {
+    }
 
     private int quantityOnhand;
     private final Map<TradeSkillMasterItem, Double> craftingMaterials =  new HashMap<>(); // item to quantity
-    private final CraftingType craftingType = CraftingType.ENCHANT;
 
     public int getQuantityOnhand() {
         return quantityOnhand;
@@ -18,10 +24,6 @@ public class Enchant extends TradeSkillMasterItem {
 
     public void setQuantityOnhand(int quantityOnhand) {
         this.quantityOnhand = quantityOnhand;
-    }
-
-    public CraftingType getCraftingType() {
-        return craftingType;
     }
 
     public void addCraftingMaterial (TradeSkillMasterItem craftingMaterial, Double quantity) {

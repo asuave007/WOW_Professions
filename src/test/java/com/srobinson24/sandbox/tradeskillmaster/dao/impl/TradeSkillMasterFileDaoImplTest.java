@@ -25,7 +25,7 @@ public class TradeSkillMasterFileDaoImplTest {
         TradeSkillMasterItemDao tradeSkillMasterItemDao = new FileTradeSkillMasterItemDaoImpl(tempFile.newFile("testFile.txt"));
 
         TradeSkillMasterItem testTradeSkillMasterItem = new TradeSkillMasterItem();
-        testTradeSkillMasterItem.setName("Enchant Neck - Mark of the Trained Soldier");
+        testTradeSkillMasterItem.setName("CraftableItem Neck - Mark of the Trained Soldier");
         testTradeSkillMasterItem.setId(141909);
         testTradeSkillMasterItem.setRawMinBuyout(109970000);
 
@@ -38,7 +38,7 @@ public class TradeSkillMasterFileDaoImplTest {
         TradeSkillMasterItemDao tradeSkillMasterItemDao = new FileTradeSkillMasterItemDaoImpl(tempFile.newFile("testFile.txt"));
 
         TradeSkillMasterItem testItem1 = new TradeSkillMasterItem();
-        testItem1.setName("Enchant Neck - Mark of the Trained Soldier");
+        testItem1.setName("CraftableItem Neck - Mark of the Trained Soldier");
         testItem1.setId(141909);
         testItem1.setRawMinBuyout(109970000);
 
@@ -56,7 +56,7 @@ public class TradeSkillMasterFileDaoImplTest {
         TradeSkillMasterItemDao tradeSkillMasterItemDao = new FileTradeSkillMasterItemDaoImpl(tempFile.newFile("testFile.txt"));
 
         TradeSkillMasterItem testTradeSkillMasterItem = new TradeSkillMasterItem();
-        testTradeSkillMasterItem.setName("Enchant Neck - Mark of the Trained Soldier");
+        testTradeSkillMasterItem.setName("CraftableItem Neck - Mark of the Trained Soldier");
         testTradeSkillMasterItem.setId(141909);
         testTradeSkillMasterItem.setRawMinBuyout(109970000);
 
@@ -76,7 +76,7 @@ public class TradeSkillMasterFileDaoImplTest {
         TradeSkillMasterItemDao tradeSkillMasterItemDao = new FileTradeSkillMasterItemDaoImpl(tempFile.newFile("testFile.txt"));
 
         TradeSkillMasterItem testItem1 = new TradeSkillMasterItem();
-        testItem1.setName("Enchant Neck - Mark of the Trained Soldier");
+        testItem1.setName("CraftableItem Neck - Mark of the Trained Soldier");
         testItem1.setId(141909);
         testItem1.setRawMinBuyout(109970000);
 

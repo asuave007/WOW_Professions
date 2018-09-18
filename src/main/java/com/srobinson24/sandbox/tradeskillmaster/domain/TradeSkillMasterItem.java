@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * Created by srobinso on 3/24/2017.
@@ -25,9 +26,21 @@ public class TradeSkillMasterItem implements Serializable {
     private int numberOfAuctions;
     @JsonProperty("MarketValue")
     private long rawMarketValue;
+    private CraftingType craftingType = CraftingType.ENCHANT;
+
 
     public TradeSkillMasterItem(int id) {
         this.id = id;
+    }
+
+    public TradeSkillMasterItem(String name) {
+        this.name = name;
+    }
+
+    public TradeSkillMasterItem(String name, int id,long rawMinBuyout) {
+        this.name = name;
+        this.id = id;
+        this.rawMinBuyout = rawMinBuyout;
     }
 
     public TradeSkillMasterItem() {
@@ -81,6 +94,14 @@ public class TradeSkillMasterItem implements Serializable {
         this.rawMinBuyout = rawMinBuyout;
     }
 
+    public CraftingType getCraftingType() {
+        return craftingType;
+    }
+
+    public void setCraftingType (CraftingType craftingType) {
+        this.craftingType = craftingType;
+    }
+
     @Override
     public String toString() {
         return "TradeSkillMasterItem{" +
@@ -90,21 +111,22 @@ public class TradeSkillMasterItem implements Serializable {
                 ", lastUpdate=" + lastUpdate +
                 ", numberOfAuctions=" + numberOfAuctions +
                 ", rawMarketValue=" + rawMarketValue +
+                ", craftingType=" + craftingType +
                 '}';
     }
+
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof TradeSkillMasterItem)) return false;
-
+        if (o == null || getClass() != o.getClass()) return false;
         TradeSkillMasterItem that = (TradeSkillMasterItem) o;
-
-        return getId() == that.getId();
+        return id == that.id &&
+                Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        return getId();
+        return Objects.hash(id, name);
     }
 }

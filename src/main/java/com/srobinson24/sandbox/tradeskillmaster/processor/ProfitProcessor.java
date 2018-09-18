@@ -1,16 +1,16 @@
 package com.srobinson24.sandbox.tradeskillmaster.processor;
 
-import com.srobinson24.sandbox.tradeskillmaster.domain.Enchant;
+import com.srobinson24.sandbox.tradeskillmaster.domain.CraftableItem;
 
 /**
  * Created by srobinso on 4/10/2017.
  */
 public interface ProfitProcessor {
-    long getCraftingCost(Enchant enchant);
+    double getCraftingCost(CraftableItem craftableItem);
 
-    long calculateProfit(Enchant enchant);
+    double calculateProfit(CraftableItem craftableItem);
 
-    long getLowestSalePrice(Enchant enchant);
+    long getLowestSalePrice(CraftableItem craftableItem);
 
     long truncateSilverAndCopper(long value);
 }

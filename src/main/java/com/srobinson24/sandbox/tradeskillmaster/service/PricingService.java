@@ -1,8 +1,7 @@
 package com.srobinson24.sandbox.tradeskillmaster.service;
 
-import com.srobinson24.sandbox.tradeskillmaster.domain.Enchant;
+import com.srobinson24.sandbox.tradeskillmaster.domain.CraftableItem;
 
-import java.io.IOException;
 import java.util.Set;
 import java.util.SortedSet;
 
@@ -13,5 +12,5 @@ public interface PricingService {
 
     void getPricedEnchants();
 
-    SortedSet<Enchant> sortByProfit(Set<Enchant> enchants);
+    SortedSet<CraftableItem> sortByProfit(Set<CraftableItem> craftableItems);
 }

@@ -19,7 +19,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        if (args == null) throw new IllegalArgumentException("Argument for json api key is required and was missing!");
+        if (args == null || args[0] == null) throw new IllegalArgumentException("Argument for json api key is required and was missing!");
 
         final String jsonApiKey = args[0];
         logger.debug("Json API key from command line is: {}", jsonApiKey);

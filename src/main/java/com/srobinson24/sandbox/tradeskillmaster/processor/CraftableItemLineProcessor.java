@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * Created by srobinso on 4/12/2017.
  */
-public interface EnchantLineProcessor <T> extends LineProcessor <T> {
+public interface CraftableItemLineProcessor<T> extends LineProcessor <T> {
 
     void setCraftingMaterialMap(Map<Integer, TradeSkillMasterItem> craftingMaterialMap);
 }
