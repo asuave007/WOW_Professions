@@ -1,7 +1,5 @@
 package com.srobinson24.sandbox.tradeskillmaster.processor.impl;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import com.srobinson24.sandbox.tradeskillmaster.domain.CraftableItem;
 import com.srobinson24.sandbox.tradeskillmaster.domain.CraftingType;
 import com.srobinson24.sandbox.tradeskillmaster.domain.InscriptionPigment;
@@ -9,7 +7,6 @@ import com.srobinson24.sandbox.tradeskillmaster.domain.TradeSkillMasterItem;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -22,7 +19,7 @@ public class CraftableItemLineProcessorImplTest {
 
     @Test
     public void testProcessLineWithInscription() throws Exception {
-        final String string = "Inscription,0,15,158202,War-Scroll of Battle Shout,158188-8";
+        final String string = "INSCRIPTION,0,15,158202,War-Scroll of Battle Shout,158188-8";
 
         CraftableItemLineProcessorImpl lineProcessor = new CraftableItemLineProcessorImpl();
         lineProcessor.setCraftingMaterialMap(new HashMap<>());
@@ -35,7 +32,7 @@ public class CraftableItemLineProcessorImplTest {
 
     @Test
     public void testProcessLineWithQuantity60() throws Exception {
-        final String string = "0,60,152494,Coastal Healing Potion,152509-1.41";
+        final String string = "ALCHEMY,0,60,152494,Coastal Healing Potion,152509-1.41";
 
         CraftableItemLineProcessorImpl lineProcessor = new CraftableItemLineProcessorImpl();
         lineProcessor.setCraftingMaterialMap(new HashMap<>());
@@ -44,11 +41,12 @@ public class CraftableItemLineProcessorImplTest {
         final CraftableItem craftableItem = lineProcessor.getResult().stream().findFirst().get();
         final int actual = craftableItem.getQuantityDesired();
         Assert.assertEquals(60, actual);
+        Assert.assertEquals(CraftingType.ALCHEMY, craftableItem.getCraftingType());
     }
 
     @Test
     public void testProcessLineWithDecimal() throws Exception {
-        final String string = "0,60,152494,Coastal Healing Potion,152509-1.5";
+        final String string = "ALCHEMY,0,60,152494,Coastal Healing Potion,152509-1.5";
 
         CraftableItemLineProcessorImpl lineProcessor = new CraftableItemLineProcessorImpl();
         lineProcessor.setCraftingMaterialMap(new HashMap<>());
@@ -58,7 +56,7 @@ public class CraftableItemLineProcessorImplTest {
 
     @Test
     public void testProcessLineHappyPath() throws Exception {
-        final String string = "0,15,152638,Flask of the Currents,152510-3.52,152511-7.04,152507-5.63";
+        final String string = "ALCHEMY,0,15,152638,Flask of the Currents,152510-3.52,152511-7.04,152507-5.63";
 
         CraftableItemLineProcessorImpl lineProcessor = new CraftableItemLineProcessorImpl();
         lineProcessor.setCraftingMaterialMap(new HashMap<>());
@@ -68,7 +66,7 @@ public class CraftableItemLineProcessorImplTest {
 
     @Test
     public void testProcessLineHappyPathWith0Materials() throws Exception {
-        final String string = "0,15,152638,Flask of the Currents,152510-3.52,152511-0,152507-5.63";
+        final String string = "ALCHEMY,0,15,152638,Flask of the Currents,152510-3.52,152511-0,152507-5.63";
 
         CraftableItemLineProcessorImpl lineProcessor = new CraftableItemLineProcessorImpl();
         final HashMap<Integer, TradeSkillMasterItem> craftingMaterialMap = new HashMap<>();
@@ -135,7 +133,7 @@ public class CraftableItemLineProcessorImplTest {
         Assert.assertEquals(1,result.size());
         final CraftableItem craftableItem = result.iterator().next();
         Assert.assertTrue(craftableItem instanceof InscriptionPigment);
-        Assert.assertEquals(CraftingType.INSCRIPTION_PIGMENT, craftableItem.getCraftingType());
+        Assert.assertEquals(CraftingType.PIGMENT, craftableItem.getCraftingType());
 
     }
 

@@ -26,7 +26,7 @@ public class TradeSkillMasterItem implements Serializable {
     private int numberOfAuctions;
     @JsonProperty("MarketValue")
     private long rawMarketValue;
-    private CraftingType craftingType = CraftingType.ENCHANT;
+    private CraftingType craftingType = CraftingType.ENCHANTING;
 
     public TradeSkillMasterItem(int id, String name) {
         this.id = id;

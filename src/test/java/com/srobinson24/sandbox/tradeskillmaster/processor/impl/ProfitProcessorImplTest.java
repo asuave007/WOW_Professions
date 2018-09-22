@@ -11,10 +11,37 @@ import org.springframework.test.util.ReflectionTestUtils;
  */
 public class ProfitProcessorImplTest {
 
+
+    @Test
+    public void testGetCraftingCostInkCheaperToBuy() {
+        final InscriptionPigment crimsonPigment = new InscriptionPigment("Crimson Pigment");
+        crimsonPigment.setCraftingType(CraftingType.PIGMENT);
+        crimsonPigment.setRawMinBuyout(22);
+
+        //todo: not correct!!!! should value the cost of the pigments!!!!
+        final TradeSkillMasterItem herb5 = new TradeSkillMasterItem("Riverbud", 1, 48);
+        final TradeSkillMasterItem herb6 = new TradeSkillMasterItem("Star Moss", 2, 51);
+
+        crimsonPigment.addHerbMillingRate(herb5, 3.16);
+        crimsonPigment.addHerbMillingRate(herb6, 3.16);
+
+        final InscriptionInk ink = new InscriptionInk("Crimson Ink");
+        ink.setCraftingType(CraftingType.INK);
+
+        ink.addCraftingMaterial(crimsonPigment, 1.0);
+        ink.setRawMinBuyout(22);
+
+        final ProfitProcessorImpl profitProcessor = new ProfitProcessorImpl();
+        final double actual = profitProcessor.getCraftingCost(ink);
+
+        Assert.assertEquals(22, actual, 0.05);
+        Assert.assertFalse(ink.isCheaperToCraft());
+    }
+
     @Test
     public void testGetCraftingCostInkCraftedIsCheaperThanBought() {
         InscriptionPigment crimsonPigment = new InscriptionPigment("Crimson Pigment");
-        crimsonPigment.setCraftingType(CraftingType.INSCRIPTION_PIGMENT);
+        crimsonPigment.setCraftingType(CraftingType.PIGMENT);
         crimsonPigment.setRawMinBuyout(158900);
 
         final TradeSkillMasterItem herb5 = new TradeSkillMasterItem("Riverbud", 152505, 290000);
@@ -24,49 +51,60 @@ public class ProfitProcessorImplTest {
         crimsonPigment.addHerbMillingRate(herb6, 3.16);
 
         InscriptionInk ink = new InscriptionInk("Crimson Ink");
-        ink.setCraftingType(CraftingType.INSCRIPTION_INK);
+        ink.setCraftingType(CraftingType.INK);
 
         ink.addCraftingMaterial(crimsonPigment, 1.0);
         ink.setRawMinBuyout(199999);
 
         final ProfitProcessorImpl profitProcessor = new ProfitProcessorImpl();
-        profitProcessor.getCraftingCost(crimsonPigment);
         final double actual = profitProcessor.getCraftingCost(ink);
 
         Assert.assertEquals(158900, actual, 0.05);
-
+        Assert.assertTrue(ink.isCheaperToCraft());
     }
 
     @Test
-    public void testGetCraftingCostInkBoughtIsCheaperThanCrafted() {
-        InscriptionPigment crimsonPigment = new InscriptionPigment("Crimson Pigment");
-        crimsonPigment.setCraftingType(CraftingType.INSCRIPTION_PIGMENT);
-        crimsonPigment.setRawMinBuyout(199400);
+    public void testGetCraftingCostPigmentIsCheaperToBuy() {
+        final InscriptionPigment crimsonPigment = new InscriptionPigment("Crimson Pigment");
+        crimsonPigment.setCraftingType(CraftingType.PIGMENT);
+        crimsonPigment.setRawMinBuyout(121);
 
-        final TradeSkillMasterItem herb5 = new TradeSkillMasterItem("Riverbud", 152505, 290000);
-        final TradeSkillMasterItem herb6 = new TradeSkillMasterItem("Star Moss", 152506, 300000);
+        final TradeSkillMasterItem herb5 = new TradeSkillMasterItem("Riverbud", 1, 48);
+        final TradeSkillMasterItem herb6 = new TradeSkillMasterItem("Star Moss", 2, 51);
 
         crimsonPigment.addHerbMillingRate(herb5, 3.16);
         crimsonPigment.addHerbMillingRate(herb6, 3.16);
 
-        InscriptionInk ink = new InscriptionInk("Crimson Ink");
-        ink.setCraftingType(CraftingType.INSCRIPTION_INK);
+        final ProfitProcessorImpl profitProcessor = new ProfitProcessorImpl();
+        final double actual = profitProcessor.getCraftingCost(crimsonPigment);
 
-        ink.addCraftingMaterial(crimsonPigment, 1.0);
-        ink.setRawMinBuyout(158900);
+        Assert.assertEquals(121, actual, 0.05);
+        Assert.assertFalse(crimsonPigment.isCheaperToCraft());
+    }
+
+    @Test
+    public void testGetCraftingCostPigmentIsCheaperToCraft() {
+        final InscriptionPigment crimsonPigment = new InscriptionPigment("Crimson Pigment");
+        crimsonPigment.setCraftingType(CraftingType.PIGMENT);
+        crimsonPigment.setRawMinBuyout(121);
+
+        final TradeSkillMasterItem herb5 = new TradeSkillMasterItem("Riverbud", 1, 25);
+        final TradeSkillMasterItem herb6 = new TradeSkillMasterItem("Star Moss", 2, 36);
+
+        crimsonPigment.addHerbMillingRate(herb5, 3.16);
+        crimsonPigment.addHerbMillingRate(herb6, 3.16);
 
         final ProfitProcessorImpl profitProcessor = new ProfitProcessorImpl();
-        profitProcessor.getCraftingCost(crimsonPigment);
-        final double actual = profitProcessor.getCraftingCost(ink);
+        final double actual = profitProcessor.getCraftingCost(crimsonPigment);
 
-        Assert.assertEquals(158900, actual, 0.05);
-
+        Assert.assertEquals(79, actual, 0.05);
+        Assert.assertTrue(crimsonPigment.isCheaperToCraft());
     }
 
     @Test
     public void testGetCraftingCostPigmentCheaperToCraftViridescentPigment() {
         InscriptionPigment virisdescentPigment = new InscriptionPigment();
-        virisdescentPigment.setCraftingType(CraftingType.INSCRIPTION_PIGMENT);
+        virisdescentPigment.setCraftingType(CraftingType.PIGMENT);
 
         final TradeSkillMasterItem bud = new TradeSkillMasterItem("Riverbud", 152505, 5);
         final TradeSkillMasterItem moss = new TradeSkillMasterItem("Star Moss", 152506, 6);
@@ -93,7 +131,7 @@ public class ProfitProcessorImplTest {
     @Test
     public void testGetCraftingCostPigmentCheaperToCraftCrimsonPigment() {
         InscriptionPigment crimsonPigment = new InscriptionPigment();
-        crimsonPigment.setCraftingType(CraftingType.INSCRIPTION_PIGMENT);
+        crimsonPigment.setCraftingType(CraftingType.PIGMENT);
 
         final TradeSkillMasterItem herb5 = new TradeSkillMasterItem("Riverbud", 152505, 5);
         final TradeSkillMasterItem herb6 = new TradeSkillMasterItem("Star Moss", 152506, 6);
@@ -120,7 +158,7 @@ public class ProfitProcessorImplTest {
     @Test
     public void testGetCraftingCostPigmentCheaperToCraft()  {
         InscriptionPigment pigment = new InscriptionPigment();
-        pigment.setCraftingType(CraftingType.INSCRIPTION_PIGMENT);
+        pigment.setCraftingType(CraftingType.PIGMENT);
 
         final TradeSkillMasterItem herb5 = new TradeSkillMasterItem("Riverbud", 152505, 5);
         final TradeSkillMasterItem herb6 = new TradeSkillMasterItem("Star Moss", 152506, 6);

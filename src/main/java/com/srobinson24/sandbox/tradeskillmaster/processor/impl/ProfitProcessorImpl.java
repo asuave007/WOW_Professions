@@ -27,8 +27,8 @@ public class ProfitProcessorImpl implements ProfitProcessor {
     public double getCraftingCost(CraftableItem craftableItem) {
         logger.trace("Finding Crafting Cost for craftableItem: {}", craftableItem);
 
-        if (CraftingType.INSCRIPTION_PIGMENT.equals(craftableItem.getCraftingType())) return pricePigmentCraftCost((InscriptionPigment) craftableItem);
-        if (CraftingType.INSCRIPTION_INK.equals(craftableItem.getCraftingType())) return priceInkCraftCost((InscriptionInk) craftableItem);
+        if (CraftingType.PIGMENT.equals(craftableItem.getCraftingType())) return pricePigmentCraftCost((InscriptionPigment) craftableItem);
+        if (CraftingType.INK.equals(craftableItem.getCraftingType())) return priceInkCraftCost((InscriptionInk) craftableItem);
 
         long totalCost = 0;
 
@@ -53,7 +53,7 @@ public class ProfitProcessorImpl implements ProfitProcessor {
         final TradeSkillMasterItem pigment =
                 ink.getCraftingMaterials().entrySet().stream().findFirst().orElseThrow(NoSuchElementException::new).getKey();
         final double lowestPigmentCost = lowestPigmentCost((InscriptionPigment) pigment);
-        if (ink.getRawMinBuyout() < lowestPigmentCost) ink.setCheaperToCraft(true);
+        if (ink.getRawMinBuyout() > lowestPigmentCost) ink.setCheaperToCraft(true);
         else ink.setCheaperToCraft(false);
         return lowestPigmentCost < ink.getRawMinBuyout() ? lowestPigmentCost : ink.getRawMinBuyout();
     }
@@ -65,8 +65,12 @@ public class ProfitProcessorImpl implements ProfitProcessor {
 
         pigment.setCheapestHerb(cheapestHerb.getKey());
         final double craftingCost = cheapestHerb.getKey().getRawMinBuyout() * cheapestHerb.getValue();
-        if (craftingCost < pigment.getRawMinBuyout()) pigment.setCheaperToCraft(true);
-        return craftingCost;
+        final long buyingCost = pigment.getRawMinBuyout();
+        if (craftingCost < buyingCost) {
+            pigment.setCheaperToCraft(true);
+            return craftingCost;
+        }
+        else return buyingCost;
     }
 
     private Map.Entry<TradeSkillMasterItem, Double> findCheapestHerb(InscriptionPigment inscriptionPigment) {
@@ -87,6 +91,7 @@ public class ProfitProcessorImpl implements ProfitProcessor {
 
     @Override
     public double calculateProfit(CraftableItem craftableItem) {
+        if (craftableItem.getCraftingType().equals(CraftingType.INSCRIPTION)) return calculateInscriptionProfit();
         final double craftingCost = getCraftingCost(craftableItem);
         final long minimumBuyout = getLowestSalePrice(craftableItem);
         final long auctionHouseCut = Math.round((auctionHousePercent * minimumBuyout));
@@ -94,6 +99,10 @@ public class ProfitProcessorImpl implements ProfitProcessor {
         final double calculatedProfit = minimumBuyout - auctionHouseCut - craftingCost;
         logger.trace("Calculated Profit is: {}", calculatedProfit);
         return calculatedProfit;
+    }
+
+    private double calculateInscriptionProfit() {
+        return 0;
     }
 
     @Override

@@ -90,7 +90,7 @@ public class CraftableItemLineProcessorImpl implements CraftableItemLineProcesso
 
         ink.addCraftingMaterial(pigment, quantity);
 
-        ink.setCraftingType(CraftingType.INSCRIPTION_INK);
+        ink.setCraftingType(CraftingType.INK);
 
         return ink;
 
@@ -115,18 +115,19 @@ public class CraftableItemLineProcessorImpl implements CraftableItemLineProcesso
             final Double rate = Double.valueOf(craftingMatRate);
             pigment.addHerbMillingRate(herb, rate);
         }
-        pigment.setCraftingType(CraftingType.INSCRIPTION_PIGMENT);
+        pigment.setCraftingType(CraftingType.PIGMENT);
         return pigment;
 
     }
 
     private CraftableItem parseMaterials(String[] strings) {
         final CraftableItem craftableItem = new CraftableItem();
-        craftableItem.setQuantityOnhand(Integer.parseInt(strings[0].trim()));
-        craftableItem.setQuantityDesired(Integer.parseInt(strings[1].trim()));
-        craftableItem.setId(Integer.parseInt(strings[2].trim()));
-        craftableItem.setName(strings[3].trim());
-        for (int ii = 4; ii < strings.length; ii++) {
+        craftableItem.setCraftingType(CraftingType.valueOf(strings[0].trim()));
+        craftableItem.setQuantityOnhand(Integer.parseInt(strings[1].trim()));
+        craftableItem.setQuantityDesired(Integer.parseInt(strings[2].trim()));
+        craftableItem.setId(Integer.parseInt(strings[3].trim()));
+        craftableItem.setName(strings[4].trim());
+        for (int ii = 5; ii < strings.length; ii++) {
 
             final String craftingMatString = strings[ii];
             final String[] craftingMats = craftingMatString.trim().split("-");

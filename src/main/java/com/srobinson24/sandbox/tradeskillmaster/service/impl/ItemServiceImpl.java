@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -33,8 +34,8 @@ import java.util.stream.Collectors;
 public class ItemServiceImpl implements ItemService {
 
     private final Logger logger = LoggerFactory.getLogger(ItemServiceImpl.class);
-    @Value("${crafting.material.ids}")
-    private Set<Integer> craftingMaterialIds;
+    @Value("${price.professions}")
+    private Set<CraftingType> professionsToPrice;
 
     @Value("${craftable.items.file}")
     private String craftableItemsFilePath;
@@ -84,7 +85,8 @@ public class ItemServiceImpl implements ItemService {
         } catch (IOException ex) {
             throw new RuntimeFileProcessingException(ex);
         }
-        return craftableItems;
+        final Set<CraftableItem> items = craftableItems.parallelStream().filter(e -> professionsToPrice.contains(e.getCraftingType())).collect(Collectors.toSet());
+        return items;
     }
 
     @Override
@@ -129,7 +131,7 @@ public class ItemServiceImpl implements ItemService {
                         logger.debug("Pulling item from disk: {}", itemFromDisk);
 
                         BeanUtils.copyProperties(itemFromDisk,craftableItem);
-//                        if (CraftingType.INSCRIPTION_PIGMENT.equals(itemFromDisk.getCraftingType())) processInscriptionPigment (craftableItem);
+//                        if (CraftingType.PIGMENT.equals(itemFromDisk.getCraftingType())) processInscriptionPigment (craftableItem);
 
                     } else {
                 throw new RuntimeException("Item ID was not found in list of all items: " + craftableItem);
