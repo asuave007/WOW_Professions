@@ -9,9 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Component
 //todo: need to modify the actual line processing to depend on the item type as an argument - ex. pigments different from inks from alchemy
@@ -60,12 +58,20 @@ public class CraftableItemLineProcessorImpl implements CraftableItemLineProcesso
         item.setQuantityDesired(Integer.parseInt(strings[2].trim()));
         item.setId(Integer.parseInt(strings[3].trim()));
         item.setName(strings[4].trim());
-        final String[] mats = strings[5].trim().split("-");
-        final Integer inkId = Integer.valueOf(mats[0]);
-        final double quantity = Double.parseDouble(mats[1]);
+        Arrays.stream(Arrays.copyOfRange(strings, 5, strings.length)).forEach(s -> {
+            final String[] mats = s.trim().split("-");
+            final Integer inkId = Integer.valueOf(mats[0]);
+            final double quantity = Double.parseDouble(mats[1]);
 
-        final TradeSkillMasterItem ink = craftingMaterialMap.get(inkId);
-        item.addCraftingMaterial(ink, quantity);
+            final TradeSkillMasterItem ink = craftingMaterialMap.get(inkId);
+            item.addCraftingMaterial(ink, quantity);
+        });
+//        final String[] mats = strings[5].trim().split("-");
+//        final Integer inkId = Integer.valueOf(mats[0]);
+//        final double quantity = Double.parseDouble(mats[1]);
+
+//        final TradeSkillMasterItem ink = craftingMaterialMap.get(inkId);
+//        item.addCraftingMaterial(ink, quantity);
 
         item.setCraftingType(CraftingType.INSCRIPTION);
 

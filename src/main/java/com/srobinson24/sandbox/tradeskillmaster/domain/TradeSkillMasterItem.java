@@ -26,6 +26,7 @@ public class TradeSkillMasterItem implements Serializable {
     private int numberOfAuctions;
     @JsonProperty("MarketValue")
     private long rawMarketValue;
+    //todo: need to remove the below line!!!!
     private CraftingType craftingType = CraftingType.ENCHANTING;
 
     public TradeSkillMasterItem(int id, String name) {
@@ -123,14 +124,13 @@ public class TradeSkillMasterItem implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof TradeSkillMasterItem)) return false;
         TradeSkillMasterItem that = (TradeSkillMasterItem) o;
-        return id == that.id &&
-                Objects.equals(name, that.name);
+        return id == that.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(id);
     }
 }

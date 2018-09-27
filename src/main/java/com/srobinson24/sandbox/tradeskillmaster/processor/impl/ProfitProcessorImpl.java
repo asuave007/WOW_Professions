@@ -61,6 +61,10 @@ public class ProfitProcessorImpl implements ProfitProcessor {
     private double pricePigmentCraftCost(InscriptionPigment pigment) {
         logger.trace("Item is a pigment: {}", pigment);
 
+        //todo: bandaid solution to bypass crafting failures!
+//        pigment.setCheaperToCraft(false);
+//        return pigment.getRawMarketValue();
+
         Map.Entry<TradeSkillMasterItem, Double> cheapestHerb = findCheapestHerb(pigment);
 
         pigment.setCheapestHerb(cheapestHerb.getKey());
@@ -91,18 +95,25 @@ public class ProfitProcessorImpl implements ProfitProcessor {
 
     @Override
     public double calculateProfit(CraftableItem craftableItem) {
-        if (craftableItem.getCraftingType().equals(CraftingType.INSCRIPTION)) return calculateInscriptionProfit();
+        if (craftableItem.getCraftingType().equals(CraftingType.INSCRIPTION))
+            return calculateInscriptionProfit(craftableItem);
         final double craftingCost = getCraftingCost(craftableItem);
         final long minimumBuyout = getLowestSalePrice(craftableItem);
         final long auctionHouseCut = Math.round((auctionHousePercent * minimumBuyout));
-        logger.trace("Auction House cut is: {}", auctionHouseCut);
+        logger.trace("Auction House cut, crafting cost, min buyout is: {}, {}, {}", auctionHouseCut, craftingCost, minimumBuyout);
         final double calculatedProfit = minimumBuyout - auctionHouseCut - craftingCost;
         logger.trace("Calculated Profit is: {}", calculatedProfit);
         return calculatedProfit;
     }
 
-    private double calculateInscriptionProfit() {
-        return 0;
+    private double calculateInscriptionProfit(CraftableItem craftableItem) {
+        final double craftingCost = getCraftingCost(craftableItem);
+        final long minimumBuyout = getLowestSalePrice(craftableItem);
+        final long auctionHouseCut = Math.round((auctionHousePercent * minimumBuyout));
+        logger.trace("Auction House cut, crafting cost, min buyout is: {}, {}, {}", auctionHouseCut, craftableItem, minimumBuyout);
+        final double calculatedProfit = minimumBuyout - auctionHouseCut - craftingCost;
+        logger.debug("Calculated Profit is: {}", calculatedProfit);
+        return calculatedProfit;
     }
 
     @Override

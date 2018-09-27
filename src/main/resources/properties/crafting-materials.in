@@ -13,12 +13,12 @@
 152877,Veiled Crystal
 
 #Inscription
-153635,Ultramarine Pigment
-153636,Crimson Pigment
-153669,Viridescent Pigment
-158187,Ultramarine Ink
-158188,Crimson Ink
-158189,Viridescent Ink
+153635,Ultramarine Pigment,PIGMENT
+153636,Crimson Pigment,PIGMENT
+153669,Viridescent Pigment,PIGMENT
+158187,Ultramarine Ink,INK
+158188,Crimson Ink,INK
+158189,Viridescent Ink,INK
 
 #Fish
 152543,Sand Shifter

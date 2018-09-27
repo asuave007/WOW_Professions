@@ -2,6 +2,7 @@ package com.srobinson24.sandbox.tradeskillmaster.service.impl;
 
 import com.google.common.base.Preconditions;
 import com.srobinson24.sandbox.tradeskillmaster.domain.CraftableItem;
+import com.srobinson24.sandbox.tradeskillmaster.domain.CraftingType;
 import com.srobinson24.sandbox.tradeskillmaster.domain.TradeSkillMasterItem;
 import com.srobinson24.sandbox.tradeskillmaster.processor.ProfitProcessor;
 import com.srobinson24.sandbox.tradeskillmaster.service.ItemService;
@@ -47,12 +48,12 @@ public class PricingServiceImpl implements PricingService {
         logger.debug("Items to update: {}", allItems);
         itemService.updateItemInformation(allItems);
 
-        final Set<CraftableItem> profitableCraftableItems = sortByProfit(craftableItems);
-        displayOutput(profitableCraftableItems, craftingItemsMap, craftableItems);
+        final List<CraftableItem> profitableCraftableItems = sortByProfit(craftableItems);
+        displayOutput(profitableCraftableItems, craftableItems);
 
     }
 
-    private void displayOutput(Set<CraftableItem> profitableCraftableItems, Map<Integer, TradeSkillMasterItem> craftingItems, Set<CraftableItem> allCraftableItems) {
+    private void displayOutput(List<CraftableItem> profitableCraftableItems, Set<CraftableItem> allCraftableItems) {
         logger.info("*******************");
         logger.info("**FINAL SOLUTIONS**");
         if (printAll) logger.info("Printing Everything");
@@ -140,31 +141,49 @@ public class PricingServiceImpl implements PricingService {
     }
 
     private void printNames(Set<CraftableItem> onHandProfitableCraftableItems) {
-        onHandProfitableCraftableItems.forEach(item -> logger.info(" {} of {}, if alchemy, craft {}", item.getQuantityDesired(), item.getName(), item.getQuantityDesired() / 1.41));
+        onHandProfitableCraftableItems
+                .stream()
+                .filter(item -> !CraftingType.ALCHEMY.equals(item.getCraftingType()))
+                .forEach(item -> logger.info(" {} of {}", item.getQuantityDesired(), item.getName()));
+
+
+        onHandProfitableCraftableItems
+                .stream()
+                .filter(item -> CraftingType.ALCHEMY.equals(item.getCraftingType()))
+                .forEach(item -> logger.info(" {} of {}, is alchemy so craft {}", item.getQuantityDesired(), item.getName(), (int) Math.ceil(item.getQuantityDesired() / 1.41)));
     }
 
 
     @Override
-    public SortedSet<CraftableItem> sortByProfit(Set<CraftableItem> craftableItems) {
+    public List<CraftableItem> sortByProfit(Set<CraftableItem> craftableItems) {
         logger.debug("sorting craftableItems by profit: {}", craftableItems);
-        final TreeSet<CraftableItem> sortedSet = new TreeSet<>((o1, o2) -> {
-            Preconditions.checkNotNull(o1);
-            Preconditions.checkNotNull(o2);
-            return Double.compare(profitProcessor.calculateProfit(o2), profitProcessor.calculateProfit(o1));
-        });
+        final List<CraftableItem> profitableCrafts = new ArrayList<>();
+
+
+//        final SortedSet<CraftableItem> profitableCrafts = new TreeSet<>((o1, o2) -> {
+//            Preconditions.checkNotNull(o1);
+//            Preconditions.checkNotNull(o2);
+//            return Double.compare(profitProcessor.calculateProfit(o2), profitProcessor.calculateProfit(o1));
+//        });
 
         if (printAll) {
-            sortedSet.addAll(craftableItems);
+            profitableCrafts.addAll(craftableItems);
         } else {
             final Set<CraftableItem> profitableCraftableItems = craftableItems
                     .stream()
                     .filter(craft -> profitProcessor.calculateProfit(craft) > profitThreshold)
                     .collect(Collectors.toSet());
 
-            sortedSet.addAll(profitableCraftableItems);
+            profitableCrafts.addAll(profitableCraftableItems);
         }
 
-        return sortedSet;
+        profitableCrafts.sort((o1, o2) -> {
+            Preconditions.checkNotNull(o1);
+            Preconditions.checkNotNull(o2);
+            return Double.compare(profitProcessor.calculateProfit(o2), profitProcessor.calculateProfit(o1));
+        });
+
+        return profitableCrafts;
 
     }
 

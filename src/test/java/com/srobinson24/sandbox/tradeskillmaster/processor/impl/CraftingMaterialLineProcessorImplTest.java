@@ -1,14 +1,10 @@
 package com.srobinson24.sandbox.tradeskillmaster.processor.impl;
 
-import com.google.common.collect.ImmutableMap;
-import com.srobinson24.sandbox.tradeskillmaster.domain.CraftableItem;
 import com.srobinson24.sandbox.tradeskillmaster.domain.CraftingType;
 import com.srobinson24.sandbox.tradeskillmaster.domain.TradeSkillMasterItem;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -17,7 +13,7 @@ import java.util.Map;
 public class CraftingMaterialLineProcessorImplTest {
 
     @Test
-    public void testProcessLineHappyPath() throws Exception {
+    public void testProcessLineHappyPath() {
         final String line1 = "124440,Arkhana";
         final String line2 = "124441,Leylight Shard";
         final String line3 = "124442,Chaos Crystal";
@@ -33,7 +29,7 @@ public class CraftingMaterialLineProcessorImplTest {
     }
 
     @Test (expected = IllegalArgumentException.class)
-    public void testProcessLineSadPath() throws Exception {
+    public void testProcessLineSadPath() {
         final String string = "1,128548,CraftableItem Cloak - Binding of Strength*****,124442-8,124440-30";
 
         CraftingMaterialLineProcessorImpl craftingMaterialLineProcessor = new CraftingMaterialLineProcessorImpl();
@@ -41,7 +37,7 @@ public class CraftingMaterialLineProcessorImplTest {
     }
 
     @Test
-    public void testGetResult() throws Exception {
+    public void testGetResult() {
         final String line1 = "124440,Arkhana";
         final String line2 = "124441,Leylight Shard";
         final String line3 = "124442,Chaos Crystal";
@@ -61,19 +57,25 @@ public class CraftingMaterialLineProcessorImplTest {
     }
 
     @Test
-    public void testInscriptionPigments () throws IOException {
-        final String string = "153635,Ultramarine Pigment";
+    public void testInscriptionPigments() {
+        final String string = "153635,Ultramarine Pigment,PIGMENT";
         CraftingMaterialLineProcessorImpl lineProcessor = new CraftingMaterialLineProcessorImpl();
         final boolean continueProcessing = lineProcessor.processLine(string);
         Assert.assertTrue(continueProcessing);
+        final TradeSkillMasterItem item = lineProcessor.getResult().values().stream().findFirst().orElseThrow(RuntimeException::new);
+        Assert.assertEquals(CraftingType.PIGMENT, item.getCraftingType());
     }
 
     @Test
-    public void testInscriptionInks() throws IOException {
-        final String string = "158188,Crimson Ink";
+    public void testInscriptionInks() {
+        final String string = "158188,Crimson Ink,INK";
         CraftingMaterialLineProcessorImpl lineProcessor = new CraftingMaterialLineProcessorImpl();
         final boolean continueProcessing = lineProcessor.processLine(string);
         Assert.assertTrue(continueProcessing);
+
+        final TradeSkillMasterItem item = lineProcessor.getResult().values().stream().findFirst().orElseThrow(RuntimeException::new);
+        Assert.assertEquals(CraftingType.INK, item.getCraftingType());
     }
+
 
 }

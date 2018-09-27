@@ -11,6 +11,97 @@ import org.springframework.test.util.ReflectionTestUtils;
  */
 public class ProfitProcessorImplTest {
 
+    @Test
+    public void testCalculateProfitInscriptionCheaperToCraft() {
+
+        final InscriptionPigment crimsonPigment = new InscriptionPigment("Crimson Pigment");
+        crimsonPigment.setId(3);
+        crimsonPigment.setCraftingType(CraftingType.PIGMENT);
+//        crimsonPigment.setRawMinBuyout();
+
+        final InscriptionInk crimsonInk = new InscriptionInk("Crimson Ink");
+        crimsonInk.setId(1);
+        crimsonInk.setCraftingType(CraftingType.INK);
+        crimsonInk.setRawMarketValue(20);
+        crimsonInk.setCheaperToCraft(false);
+
+        final InscriptionInk ultramarineInk = new InscriptionInk("Crimson Ink");
+        ultramarineInk.setId(2);
+        ultramarineInk.setCraftingType(CraftingType.INK);
+        ultramarineInk.setRawMarketValue(1);
+        ultramarineInk.setCheaperToCraft(false);
+
+
+        final CraftableItem codex = new CraftableItem("Tome of the Quiet Mind");
+        codex.setCraftingType(CraftingType.INSCRIPTION);
+        codex.setName("Tome of the Quiet Mind");
+        codex.setNumberOfAuctions(17);
+        codex.setRawMinBuyout(160);
+        codex.addCraftingMaterial(crimsonInk, 6.0);
+        codex.addCraftingMaterial(ultramarineInk, 12.0);
+
+        final double actual = new ProfitProcessorImpl().calculateProfit(codex);
+
+        Assert.assertEquals(28, actual, 0.01);
+
+    }
+
+    @Test
+    public void testCalculateProfitInscriptionCheaperToBuy() {
+        final InscriptionInk crimsonInk = new InscriptionInk("Crimson Ink");
+        crimsonInk.setId(1);
+        crimsonInk.setCraftingType(CraftingType.INK);
+        crimsonInk.setRawMarketValue(20);
+        crimsonInk.setCheaperToCraft(false);
+
+        final InscriptionInk ultramarineInk = new InscriptionInk("Crimson Ink");
+        ultramarineInk.setId(2);
+        ultramarineInk.setCraftingType(CraftingType.INK);
+        ultramarineInk.setRawMarketValue(1);
+        ultramarineInk.setCheaperToCraft(false);
+
+
+        final CraftableItem codex = new CraftableItem("Tome of the Quiet Mind");
+        codex.setCraftingType(CraftingType.INSCRIPTION);
+        codex.setName("Tome of the Quiet Mind");
+        codex.setNumberOfAuctions(17);
+        codex.setRawMinBuyout(160);
+        codex.addCraftingMaterial(crimsonInk, 6.0);
+        codex.addCraftingMaterial(ultramarineInk, 12.0);
+
+        final double actual = new ProfitProcessorImpl().calculateProfit(codex);
+
+        Assert.assertEquals(28, actual, 0.01);
+
+    }
+
+    @Test
+    public void testGetCraftingCostInscriptionCraftWithBoughtsMats() {
+
+        final InscriptionInk crimsonInk = new InscriptionInk("Crimson Ink");
+        crimsonInk.setId(1);
+        crimsonInk.setCraftingType(CraftingType.INK);
+        crimsonInk.setRawMarketValue(20);
+        crimsonInk.setCheaperToCraft(false);
+
+        final InscriptionInk ultramarineInk = new InscriptionInk("Crimson Ink");
+        ultramarineInk.setId(2);
+        ultramarineInk.setCraftingType(CraftingType.INK);
+        ultramarineInk.setRawMarketValue(1);
+        ultramarineInk.setCheaperToCraft(false);
+
+
+        final CraftableItem codex = new CraftableItem("Tome of the Quiet Mind");
+        codex.setCraftingType(CraftingType.INSCRIPTION);
+        codex.setName("Tome of the Quiet Mind");
+        codex.addCraftingMaterial(crimsonInk, 6.0);
+        codex.addCraftingMaterial(ultramarineInk, 12.0);
+
+        final double actual = new ProfitProcessorImpl().getCraftingCost(codex);
+
+        Assert.assertEquals(132, actual, 0.01);
+
+    }
 
     @Test
     public void testGetCraftingCostInkCheaperToBuy() {
@@ -31,8 +122,7 @@ public class ProfitProcessorImplTest {
         ink.addCraftingMaterial(crimsonPigment, 1.0);
         ink.setRawMinBuyout(22);
 
-        final ProfitProcessorImpl profitProcessor = new ProfitProcessorImpl();
-        final double actual = profitProcessor.getCraftingCost(ink);
+        final double actual = new ProfitProcessorImpl().getCraftingCost(ink);
 
         Assert.assertEquals(22, actual, 0.05);
         Assert.assertFalse(ink.isCheaperToCraft());
@@ -105,14 +195,16 @@ public class ProfitProcessorImplTest {
     public void testGetCraftingCostPigmentCheaperToCraftViridescentPigment() {
         InscriptionPigment virisdescentPigment = new InscriptionPigment();
         virisdescentPigment.setCraftingType(CraftingType.PIGMENT);
+        virisdescentPigment.setRawMinBuyout(500);
+        virisdescentPigment.setRawMarketValue(521);
 
-        final TradeSkillMasterItem bud = new TradeSkillMasterItem("Riverbud", 152505, 5);
-        final TradeSkillMasterItem moss = new TradeSkillMasterItem("Star Moss", 152506, 6);
-        final TradeSkillMasterItem bite = new TradeSkillMasterItem("Akunda's Bite", 152507, 7);
-        final TradeSkillMasterItem kiss = new TradeSkillMasterItem("Winter's Kiss", 152508, 8);
-        final TradeSkillMasterItem pollen = new TradeSkillMasterItem("Siren's Pollen", 152509, 9);
-        final TradeSkillMasterItem weed = new TradeSkillMasterItem("Anchor Weed", 1525010, 10);
-        final TradeSkillMasterItem stalk = new TradeSkillMasterItem("Sea Stalk", 1525011, 11);
+        final TradeSkillMasterItem bud = new TradeSkillMasterItem("Riverbud", 152505, 35);
+        final TradeSkillMasterItem moss = new TradeSkillMasterItem("Star Moss", 152506, 36);
+        final TradeSkillMasterItem bite = new TradeSkillMasterItem("Akunda's Bite", 152507, 37);
+        final TradeSkillMasterItem kiss = new TradeSkillMasterItem("Winter's Kiss", 152508, 38);
+        final TradeSkillMasterItem pollen = new TradeSkillMasterItem("Siren's Pollen", 152509, 39);
+        final TradeSkillMasterItem weed = new TradeSkillMasterItem("Anchor Weed", 1525010, 560);
+        final TradeSkillMasterItem stalk = new TradeSkillMasterItem("Sea Stalk", 1525011, 41);
 
         virisdescentPigment.addHerbMillingRate(bud, 7.58);
         virisdescentPigment.addHerbMillingRate(moss, 7.58);
@@ -124,7 +216,9 @@ public class ProfitProcessorImplTest {
 
         final double actual = new ProfitProcessorImpl().getCraftingCost(virisdescentPigment);
 
-        Assert.assertEquals(3.05 * 10, actual, 0.05);
+        Assert.assertEquals(265.3, actual, 0.05);
+        Assert.assertTrue(virisdescentPigment.isCheaperToCraft());
+
 
     }
 
@@ -132,14 +226,16 @@ public class ProfitProcessorImplTest {
     public void testGetCraftingCostPigmentCheaperToCraftCrimsonPigment() {
         InscriptionPigment crimsonPigment = new InscriptionPigment();
         crimsonPigment.setCraftingType(CraftingType.PIGMENT);
+        crimsonPigment.setRawMinBuyout(22);
+        crimsonPigment.setRawMarketValue(24);
 
         final TradeSkillMasterItem herb5 = new TradeSkillMasterItem("Riverbud", 152505, 5);
-        final TradeSkillMasterItem herb6 = new TradeSkillMasterItem("Star Moss", 152506, 6);
-        final TradeSkillMasterItem herb7 = new TradeSkillMasterItem("Akunda's Bite", 152507, 7);
-        final TradeSkillMasterItem herb8 = new TradeSkillMasterItem("Winter's Kiss", 152508, 8);
-        final TradeSkillMasterItem herb9 = new TradeSkillMasterItem("Siren's Pollen", 152509, 9);
-        final TradeSkillMasterItem herb10 = new TradeSkillMasterItem("Anchor Weed", 1525010, 10);
-        final TradeSkillMasterItem herb11 = new TradeSkillMasterItem("Sea Stalk", 1525011, 11);
+        final TradeSkillMasterItem herb6 = new TradeSkillMasterItem("Star Moss", 152506, 46);
+        final TradeSkillMasterItem herb7 = new TradeSkillMasterItem("Akunda's Bite", 152507, 47);
+        final TradeSkillMasterItem herb8 = new TradeSkillMasterItem("Winter's Kiss", 152508, 48);
+        final TradeSkillMasterItem herb9 = new TradeSkillMasterItem("Siren's Pollen", 152509, 49);
+        final TradeSkillMasterItem herb10 = new TradeSkillMasterItem("Anchor Weed", 1525010, 568);
+        final TradeSkillMasterItem herb11 = new TradeSkillMasterItem("Sea Stalk", 1525011, 51);
 
         crimsonPigment.addHerbMillingRate(herb5, 3.16);
         crimsonPigment.addHerbMillingRate(herb6, 3.16);
@@ -151,14 +247,17 @@ public class ProfitProcessorImplTest {
 
         final double actual = new ProfitProcessorImpl().getCraftingCost(crimsonPigment);
 
-        Assert.assertEquals(3.16 * 5, actual, 0.05);
+        Assert.assertEquals(15.8, actual, 0.05);
+        Assert.assertTrue(crimsonPigment.isCheaperToCraft());
 
     }
 
     @Test
-    public void testGetCraftingCostPigmentCheaperToCraft()  {
+    public void testGetCraftingCostPigmentCheaperToBuy() {
         InscriptionPigment pigment = new InscriptionPigment();
         pigment.setCraftingType(CraftingType.PIGMENT);
+        pigment.setRawMarketValue(5);
+        pigment.setRawMinBuyout(3);
 
         final TradeSkillMasterItem herb5 = new TradeSkillMasterItem("Riverbud", 152505, 5);
         final TradeSkillMasterItem herb6 = new TradeSkillMasterItem("Star Moss", 152506, 6);
@@ -178,7 +277,8 @@ public class ProfitProcessorImplTest {
 
         final double actual = new ProfitProcessorImpl().getCraftingCost(pigment);
 
-        Assert.assertEquals(1.21 * 5, actual, 0.05);
+        Assert.assertEquals(3.0, actual, 0.01);
+        Assert.assertFalse(pigment.isCheaperToCraft());
 
     }
     

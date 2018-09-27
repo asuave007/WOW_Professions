@@ -85,8 +85,7 @@ public class ItemServiceImpl implements ItemService {
         } catch (IOException ex) {
             throw new RuntimeFileProcessingException(ex);
         }
-        final Set<CraftableItem> items = craftableItems.parallelStream().filter(e -> professionsToPrice.contains(e.getCraftingType())).collect(Collectors.toSet());
-        return items;
+        return craftableItems.parallelStream().filter(e -> professionsToPrice.contains(e.getCraftingType())).collect(Collectors.toSet());
     }
 
     @Override
@@ -128,9 +127,9 @@ public class ItemServiceImpl implements ItemService {
             if (itemFromDisk != null
                     && itemFromDisk.getLastUpdate() != null
                     && !itemFromDisk.getLastUpdate().plusMinutes(minutesBeforeUpdate).isBefore(LocalDateTime.now())) {
-                        logger.debug("Pulling item from disk: {}", itemFromDisk);
+                logger.debug("Pulling item from disk: {} copying to : {}", itemFromDisk, craftableItem);
 
-                        BeanUtils.copyProperties(itemFromDisk,craftableItem);
+                BeanUtils.copyProperties(itemFromDisk, craftableItem, "craftingType");
 //                        if (CraftingType.PIGMENT.equals(itemFromDisk.getCraftingType())) processInscriptionPigment (craftableItem);
 
                     } else {
