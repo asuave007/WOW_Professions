@@ -49,11 +49,11 @@ public class PricingServiceImpl implements PricingService {
         itemService.updateItemInformation(allItems);
 
         final List<CraftableItem> profitableCraftableItems = sortByProfit(craftableItems);
-        displayOutput(profitableCraftableItems, craftableItems);
+        displayOutput(profitableCraftableItems, craftingItemsMap, craftableItems);
 
     }
 
-    private void displayOutput(List<CraftableItem> profitableCraftableItems, Set<CraftableItem> allCraftableItems) {
+    private void displayOutput(List<CraftableItem> profitableCraftableItems, Map<Integer, TradeSkillMasterItem> craftingItemsMap, Set<CraftableItem> allCraftableItems) {
         logger.info("*******************");
         logger.info("**FINAL SOLUTIONS**");
         if (printAll) logger.info("Printing Everything");
@@ -116,6 +116,14 @@ public class PricingServiceImpl implements PricingService {
 
         });
 
+        logger.info("INSCRIPTION INFO");
+        craftingItemsMap
+                .entrySet()
+                .stream()
+                .map(Map.Entry::getValue)
+                .filter(item -> CraftingType.PIGMENT.equals(item.getCraftingType()) || CraftingType.INK.equals(item.getCraftingType()))
+                .sorted(Comparator.comparing(TradeSkillMasterItem::getName))
+                .forEach(item -> logger.info("Inscription info: {}: min:{} market:{}", item.getName(), item.getRawMinBuyout() / 10000, item.getRawMarketValue() / 10000));
     }
 
     //fixme: this should be placed elsewhere
@@ -158,13 +166,6 @@ public class PricingServiceImpl implements PricingService {
     public List<CraftableItem> sortByProfit(Set<CraftableItem> craftableItems) {
         logger.debug("sorting craftableItems by profit: {}", craftableItems);
         final List<CraftableItem> profitableCrafts = new ArrayList<>();
-
-
-//        final SortedSet<CraftableItem> profitableCrafts = new TreeSet<>((o1, o2) -> {
-//            Preconditions.checkNotNull(o1);
-//            Preconditions.checkNotNull(o2);
-//            return Double.compare(profitProcessor.calculateProfit(o2), profitProcessor.calculateProfit(o1));
-//        });
 
         if (printAll) {
             profitableCrafts.addAll(craftableItems);
